@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <content>Home_Page_Safer_Buildings</content>
+        <formFactor>Large</formFactor>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Flexipage</type>
+        <pageOrSobjectType>standard-home</pageOrSobjectType>
+    </actionOverrides>
+    <brand>
+        <headerColor>#A11506</headerColor>
+        <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
+    </brand>
+    <description>Allows Safer Buildings team access to the provided data</description>
+    <formFactors>Large</formFactors>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <label>Safer Buildings Lightning</label>
+    <navType>Standard</navType>
+    <tabs>standard-home</tabs>
+    <tabs>standard-Account</tabs>
+    <tabs>Building_Owner_and_Building_Agent__c</tabs>
+    <tabs>Property__c</tabs>
+    <tabs>Building__c</tabs>
+    <tabs>QFES_Building_Risk__c</tabs>
+    <tabs>standard-Case</tabs>
+    <tabs>Checklist__c</tabs>
+    <tabs>Building_Transfer__c</tabs>
+    <tabs>standard-Dashboard</tabs>
+    <tabs>Compliance_Period__c</tabs>
+    <tabs>standard-report</tabs>
+    <tabs>Site__c</tabs>
+    <uiType>Lightning</uiType>
+</CustomApplication>
