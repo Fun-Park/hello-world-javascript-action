@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Building Transfer</label>
+    <protected>false</protected>
+    <values>
+        <field>Application_ID__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>BX__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Batch_Name__c</field>
+        <value xsi:type="xsd:string">Building_Transfer__c</value>
+    </values>
+    <values>
+        <field>Building_ID__c</field>
+        <value xsi:type="xsd:string">$Building_Transfer__c.Building__r.External_Id__c|Building__r.Name</value>
+    </values>
+    <values>
+        <field>Building_Name__c</field>
+        <value xsi:type="xsd:string">$Building_Transfer__c.Building__r.Building_Description__c</value>
+    </values>
+    <values>
+        <field>Case_ID__c</field>
+        <value xsi:type="xsd:string">[Building ID]</value>
+    </values>
+    <values>
+        <field>Comments__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Complainant_ID__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Date_In__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Document_File_Name__c</field>
+        <value xsi:type="xsd:string">[Building ID]_[Property Address]_[MeridioFileName]_[Date In]</value>
+    </values>
+    <values>
+        <field>Document_Type__c</field>
+        <value xsi:type="xsd:string">Letter</value>
+    </values>
+    <values>
+        <field>FileNo__c</field>
+        <value xsi:type="xsd:string">[Building ID]</value>
+    </values>
+    <values>
+        <field>Folder_Name__c</field>
+        <value xsi:type="xsd:string">$Building_Transfer__c.Building__r.External_Id__c|Building__r.Name-Building__r.Related_Property__r.Full_Address__c</value>
+    </values>
+    <values>
+        <field>Folder__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>GroupType__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Licence_ID__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Mail_From__c</field>
+        <value xsi:type="xsd:string">External</value>
+    </values>
+    <values>
+        <field>Mail_To__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Markout_Code__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>MeridioDocumentCategory__c</field>
+        <value xsi:type="xsd:string">189</value>
+    </values>
+    <values>
+        <field>MoreDetailedName__c</field>
+        <value xsi:type="xsd:string">Building Transfer</value>
+    </values>
+    <values>
+        <field>NamingConvention__c</field>
+        <value xsi:type="xsd:string">Rule 8</value>
+    </values>
+    <values>
+        <field>Originating_Author__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Owner_Contact_Address__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Owner_Contact_Email__c</field>
+        <value xsi:type="xsd:string">$Building_Transfer__c.Building__r.Related_Property__r.Building_Owner__r.Email__c</value>
+    </values>
+    <values>
+        <field>Owner_Contact_Organisation__c</field>
+        <value xsi:type="xsd:string">$Building_Transfer__c.Building__r.Related_Property__r.Building_Owner__r.Organisation__c</value>
+    </values>
+    <values>
+        <field>Owner_Contact_Relationship__c</field>
+        <value xsi:type="xsd:string">$Building_Transfer__c.Building__r.Related_Property__r.Building_Owner__r.Relationship__c</value>
+    </values>
+    <values>
+        <field>Owner_Name__c</field>
+        <value xsi:type="xsd:string">$Building_Transfer__c.Building__r.Related_Property__r.Building_Owner__r.Contact_Name__c</value>
+    </values>
+    <values>
+        <field>Owner_Street_Name__c</field>
+        <value xsi:type="xsd:string">$Building_Transfer__c.Building__r.Related_Property__r.Building_Owner__r.Street_2__c</value>
+    </values>
+    <values>
+        <field>Owner_Street_Number__c</field>
+        <value xsi:type="xsd:string">$Building_Transfer__c.Building__r.Related_Property__r.Building_Owner__r.Street_1__c</value>
+    </values>
+    <values>
+        <field>Owner_Street_Postcode__c</field>
+        <value xsi:type="xsd:string">$Building_Transfer__c.Building__r.Related_Property__r.Building_Owner__r.Postcode__c</value>
+    </values>
+    <values>
+        <field>Owner_Street_State__c</field>
+        <value xsi:type="xsd:string">$Building_Transfer__c.Building__r.Related_Property__r.Building_Owner__r.State__c</value>
+    </values>
+    <values>
+        <field>Owner_Street_Suburb__c</field>
+        <value xsi:type="xsd:string">$Building_Transfer__c.Building__r.Related_Property__r.Building_Owner__r.Suburb__c</value>
+    </values>
+    <values>
+        <field>Owner_Street_Type__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>ParentCase__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Property_Address__c</field>
+        <value xsi:type="xsd:string">$Building_Transfer__c.Building__r.Related_Property__r.Full_Address__c</value>
+    </values>
+    <values>
+        <field>Property_Postcode__c</field>
+        <value xsi:type="xsd:string">$Building_Transfer__c.Building__r.Related_Property__r.Property_Postcode__c</value>
+    </values>
+    <values>
+        <field>Property_State__c</field>
+        <value xsi:type="xsd:string">$Building_Transfer__c.Building__r.Related_Property__r.Property_State__c</value>
+    </values>
+    <values>
+        <field>Property_Street_Name__c</field>
+        <value xsi:type="xsd:string">$Building_Transfer__c.Building__r.Related_Property__r.Property_Street_Name__c</value>
+    </values>
+    <values>
+        <field>Property_Street_Number__c</field>
+        <value xsi:type="xsd:string">$Building_Transfer__c.Building__r.Related_Property__r.Property_Street_Number__c</value>
+    </values>
+    <values>
+        <field>Property_Street_Type__c</field>
+        <value xsi:type="xsd:string">$Building_Transfer__c.Building__r.Related_Property__r.Property_Street_Type__c</value>
+    </values>
+    <values>
+        <field>Property_Suburb__c</field>
+        <value xsi:type="xsd:string">$Building_Transfer__c.Building__r.Related_Property__r.Property_Suburb__c</value>
+    </values>
+    <values>
+        <field>Related_Customer_Field__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Respondent_Id__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>SFN__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>ServiceType__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Subject__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Workflow__c</field>
+        <value xsi:nil="true"/>
+    </values>
+</CustomMetadata>

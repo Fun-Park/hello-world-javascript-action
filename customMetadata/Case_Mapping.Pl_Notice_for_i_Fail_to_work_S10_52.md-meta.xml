@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Pl_Notice_for_i_Fail_to_work_S10_52</label>
+    <protected>false</protected>
+    <values>
+        <field>IsActive__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>QBCC_Case_Type_API__c</field>
+        <value xsi:type="xsd:string">Notice for inspection of plumbing or drainage work</value>
+    </values>
+    <values>
+        <field>Record_Type__c</field>
+        <value xsi:type="xsd:string">Plumbing</value>
+    </values>
+    <values>
+        <field>Sub_Status_Api__c</field>
+        <value xsi:type="xsd:string">S106V Notice Issued</value>
+    </values>
+    <values>
+        <field>Sub_Type_Api__c</field>
+        <value xsi:type="xsd:string">PL_NIPD_Failure to comply with rectification notice and request re-assessment of work</value>
+    </values>
+</CustomMetadata>

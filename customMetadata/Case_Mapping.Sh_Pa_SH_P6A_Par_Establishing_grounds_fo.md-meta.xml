@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Sh_Pa_SH_P6A_Par_Establishing_grounds_fo</label>
+    <protected>false</protected>
+    <values>
+        <field>IsActive__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values> 
+    <values>
+        <field>QBCC_Case_Type_API__c</field>
+        <value xsi:type="xsd:string">Part 6A Disciplinary Proceedings</value>
+    </values>
+    <values>
+        <field>Record_Type__c</field>
+        <value xsi:type="xsd:string">Shared</value>
+    </values>
+    <values>
+        <field>Sub_Status_Api__c</field>
+        <value xsi:type="xsd:string">Establishing grounds for disciplinary action</value>
+    </values>
+    <values>
+        <field>Sub_Type_Api__c</field>
+        <value xsi:type="xsd:string">SH_P6A_Part 6A Disciplinary Proceedings</value>
+    </values>
+</CustomMetadata>

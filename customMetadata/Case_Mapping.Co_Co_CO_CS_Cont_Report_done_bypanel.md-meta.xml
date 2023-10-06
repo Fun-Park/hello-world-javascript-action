@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Co_Co_CO_CS_Cont_Report_done_bypanel</label>
+    <protected>false</protected>
+    <values>
+        <field>IsActive__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values> 
+    <values>
+        <field>QBCC_Case_Type_API__c</field>
+        <value xsi:type="xsd:string">Contractor Support</value>
+    </values>
+    <values>
+        <field>Record_Type__c</field>
+        <value xsi:type="xsd:string">Compliance_New</value>
+    </values>
+    <values>
+        <field>Sub_Status_Api__c</field>
+        <value xsi:type="xsd:string">Report done by panel</value>
+    </values>
+    <values>
+        <field>Sub_Type_Api__c</field>
+        <value xsi:type="xsd:string">CO_CS_Contractor Support</value>
+    </values>
+</CustomMetadata>

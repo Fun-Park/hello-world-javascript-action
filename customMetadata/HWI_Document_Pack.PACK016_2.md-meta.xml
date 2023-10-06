@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>PACK016_2</label>
+    <protected>false</protected>
+    <values>
+        <field>Active_Docs_Template__c</field>
+        <value xsi:type="xsd:string">Notice of Cover</value>
+    </values>
+    <values>
+        <field>Document_Pack__c</field>
+        <value xsi:type="xsd:string">PACK016</value>
+    </values>
+    <values>
+        <field>Recipient_Type__c</field>
+        <value xsi:type="xsd:string">Owner</value>
+    </values>
+    <values>
+        <field>Sequence_No__c</field>
+        <value xsi:type="xsd:double">2.0</value>
+    </values>
+    <values>
+        <field>Use_Alternative_Email__c</field>
+        <value xsi:type="xsd:boolean">false</value>
+    </values>
+</CustomMetadata>

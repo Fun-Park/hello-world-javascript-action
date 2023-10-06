@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Trust Account Opening Notification</label>
+    <protected>false</protected>
+    <values>
+        <field>Declaration_Metadata_Configuration__c</field>
+        <value xsi:type="xsd:string">TrustAccount</value>
+    </values>
+    <values>
+        <field>Document_Type__c</field>
+        <value xsi:type="xsd:string">Email</value>
+    </values>
+    <values>
+        <field>Form_Type__c</field>
+        <value xsi:type="xsd:string">TrustAccountOpeningNotification</value>
+    </values>
+    <values>
+        <field>MoreDetailedName__c</field>
+        <value xsi:type="xsd:string">Trust Account Opening</value>
+    </values>
+    <values>
+        <field>Override_Values__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>PolicyVersion09</label>
+    <protected>false</protected>
+    <values>
+        <field>Add_Cover_Accommodation_Limit__c</field>
+        <value xsi:type="xsd:double">5000.0</value>
+    </values>
+    <values>
+        <field>Additional_Cover_Limit_5_Dwellings__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Additional_Cover_Limit__c</field>
+        <value xsi:type="xsd:double">100000.0</value>
+    </values>
+    <values>
+        <field>Ancillary_Limit__c</field>
+        <value xsi:type="xsd:double">200000.0</value>
+    </values>
+    <values>
+        <field>Building_Limit__c</field>
+        <value xsi:type="xsd:double">1000000.0</value>
+    </values>
+    <values>
+        <field>DS_Accommodation_Limit__c</field>
+        <value xsi:type="xsd:double">5000.0</value>
+    </values>
+    <values>
+        <field>Defects_Subsidence_Limit__c</field>
+        <value xsi:type="xsd:double">200000.0</value>
+    </values>
+    <values>
+        <field>Duplex_Ancillary_Limit__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Duplex_Building_Limit__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Duplex_DS_Accommodation_Limit__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Duplex_Defects_Subsidence_Limit__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Duplex_NC_Accommodation_Limit__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Duplex_Non_Completion_Limit__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Duplex_Opt_Cover_DS_Accommodation_Limit__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Duplex_Opt_Cover_Defects_Subsidence__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Duplex_Opt_Cover_NC_Accommodation_Limit__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Duplex_Opt_Cover_Non_Completion_Limit__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Duplex_Optional_Cover_Ancillary_Limit__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Duplex_Optional_Cover_Building_Limit__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>End_Date__c</field>
+        <value xsi:type="xsd:date">2016-10-27</value>
+    </values>
+    <values>
+        <field>Months_Cover__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>NC_Accommodation_Limit__c</field>
+        <value xsi:type="xsd:double">5000.0</value>
+    </values>
+    <values>
+        <field>Non_Completion_Limit__c</field>
+        <value xsi:type="xsd:double">200000.0</value>
+    </values>
+    <values>
+        <field>Schedule_Excess__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Schedule_Type__c</field>
+        <value xsi:type="xsd:double">8.0</value>
+    </values>
+    <values>
+        <field>Start_Date__c</field>
+        <value xsi:type="xsd:date">2014-06-30</value>
+    </values>
+</CustomMetadata>

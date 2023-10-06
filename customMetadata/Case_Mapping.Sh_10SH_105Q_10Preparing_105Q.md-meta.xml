@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Sh_10SH_105Q_10Preparing_105Q</label>
+    <protected>false</protected>
+    <values>
+        <field>IsActive__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values> 
+    <values>
+        <field>QBCC_Case_Type_API__c</field>
+        <value xsi:type="xsd:string">105Q</value>
+    </values>
+    <values>
+        <field>Record_Type__c</field>
+        <value xsi:type="xsd:string">Shared</value>
+    </values>
+    <values>
+        <field>Sub_Status_Api__c</field>
+        <value xsi:type="xsd:string">Preparing 105Q</value>
+    </values>
+    <values>
+        <field>Sub_Type_Api__c</field>
+        <value xsi:type="xsd:string">SH_105Q_105Q</value>
+    </values>
+</CustomMetadata>
