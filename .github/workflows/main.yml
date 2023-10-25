@@ -7,7 +7,7 @@ jobs:
     steps:
       - name: Hello world action step
         id: hello
-        uses: actions/hello-world-javascript-action@e76147da8e5c81eaf017dede5645551d4b94427b
+        uses: Fun-Park/hello-world-javascript-action@master
         with:
           who-to-greet: 'Surahman the hexo'
       # Use the output from the `hello` step
