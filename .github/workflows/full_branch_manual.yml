@@ -44,7 +44,7 @@ jobs:
         with:
           username: ${{ github.actor }}
           team: 'Salesforce Developers'
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PLAYGROUND_TOKEN }}
 
       - name: Validate User And Terminate Step
         run: |
