@@ -1,0 +1,1073 @@
+# This is a basic workflow that is manually triggered
+
+name: Delta - With Tests
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI
+# or API.
+on:
+  workflow_dispatch:
+    inputs:
+      DEBUG:
+        description: 'If DEBUGGING and artifact creation should be enabled'
+        default: false
+        required: false
+        type: boolean
+      PLSPROD:
+        description: 'Use production PLS Endpoint'
+        default: false
+        required: false
+        type: boolean
+      ValidateOnly:
+        description: 'Validation only'
+        default: false
+        required: false
+        type: boolean
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  UserValidation:
+    runs-on: ubuntu-latest
+    outputs:
+      UserValidation: ${{ steps.checkUserMember.outputs.isTeamMember }}
+    steps:
+      - name: User Validation Initialization
+        run: echo Running on branch ${GITHUB_REF##*/}
+
+      - name: Retrieve User Membership
+        uses: tspascoal/get-user-teams-membership@v2
+        id: checkUserMember
+        with:
+          username: ${{ github.actor }}
+          team: 'Salesforce Developers'
+          GITHUB_TOKEN: ${{ secrets.QBCC_PAT_FOR_WORKFLOWS }}
+
+      - name: Validate User And Terminate Step
+        run: |
+          if ${{ steps.checkUserMember.outputs.isTeamMember == 'true' }} 
+          then
+            echo "Is Member"
+          else 
+            echo "Is Not Member"
+            exit 1            
+          fi
+      - name: User Validation Complete
+        run: 
+          echo "User Validation Complete"
+  generic-deploy-with-test:
+    runs-on: ubuntu-latest
+    needs: UserValidation
+    if: ${{needs.UserValidation.outputs.UserValidation == 'true'}}     
+    env:
+      WORKFLOW_ID: 'delta_manual.yml'
+      PACKAGEXML_FILE: './package/package.xml'
+      FULL_PACKAGEXML_FILE: './package/full_package.xml'
+      PACKAGEXML_PREPOSTBUILD_FILE: './package/pre_post_package.xml'
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      OUTPUT_TESTCLASS_STRING: 'test'
+      TESTSCRIPT_OUTPUT_FILENAME: './output/allTestClasses.csv'
+      WORKFLOW_DIR: '${{secrets.FORCE_APP_DIR_ALL_ENV}}workflows/'
+      NAMECREDENTIAL_DIR: '${{secrets.FORCE_APP_DIR_ALL_ENV}}namedCredentials/'
+      EMAIL_DIR: '${{secrets.FORCE_APP_DIR_ALL_ENV}}email/'
+      CUSTOM_METADATA_DIR: '${{secrets.FORCE_APP_DIR_ALL_ENV}}customMetadata/'
+      WORKING_FOLDER: './Salesforce/'
+      TRUSTED_SITE_DIR: '${{secrets.FORCE_APP_DIR_ALL_ENV}}cspTrustedSites/'
+      STATIC_RESOURCES_DIR: '${{secrets.FORCE_APP_DIR_ALL_ENV}}staticresources/'
+      REMOTE_SETTING_DIR: '${{secrets.FORCE_APP_DIR_ALL_ENV}}remoteSiteSettings/'
+      SRC_PROFILE_DIR: '${{secrets.FORCE_APP_DIR_ALL_ENV}}profiles/'
+      SRC_DIR: ${{secrets.FORCE_APP_DIR_ALL_ENV}}
+      SRC_SETTING_DIR: '${{secrets.FORCE_APP_DIR_ALL_ENV}}settings/'
+      SRC_QUEUES_DIR: '${{secrets.FORCE_APP_DIR_ALL_ENV}}queues/'
+
+      NAMECREDENTIAL_RESOURCES: 'AWS_SV4.namedCredential-meta.xml, Declaration_S3_Bucket.namedCredential-meta.xml, AWS_SVC.namedCredential-meta.xml'
+      NAMECREDENTIAL_AWS_SV4_FILENAME: 'AWS_SV4.namedCredential-meta.xml'
+      DECLARATION3_NAMECREDENTIAL_FILENAME: 'Declaration_S3_Bucket.namedCredential-meta.xml'
+      AWS_INTEGRATION_NAMECREDENTIAL_FILENAME: 'AWS_Integration_Engine.namedCredential-meta.xml'
+      NAMECREDENTIAL_PLSPlUS: 'PLSPlus_*.namedCredential-meta.xml'
+      NAMECREDENTIAL_PLSPLUS_DISPUTES_FILE: 'PLSPlus_Disputes.namedCredential-meta.xml'
+      NAMECREDENTIAL_PLSPLUS_NOTIFICATION_FILE: 'PLSPlus_NotifiableWorks.namedCredential-meta.xml'
+      NAMECREDENTIAL_PLSPLUS_SIFI_FILE: 'PLSPlus_SIFI.namedCredential-meta.xml'
+      NAMECREDENTIAL_PLSPLUS_OTHER_FILE: 'PLSPlus_OTHER.namedCredential-meta.xml'
+      NAMECREDENTIAL_AWS_SVC_FILE: 'AWS_SVC.namedCredential-meta.xml'
+      TRUST_ACCOUNT_WORKFLOW: 'Trust_Account__c.workflow-meta.xml'
+      CASE_WORKFLOW: 'Case.workflow-meta.xml'
+      TRANSACTION_PAYLOAD_WORKFLOW: 'Transaction_Payload_Header__c.workflow-meta.xml'
+      POLICY_TRANSACTION_WORKFLOW: 'PolicyTransaction__c.workflow-meta.xml'
+      POLICY_WORKFLOW: 'Policy__c.workflow-meta.xml'
+      DOCUMENT_REQUEST_WORKFLOW: 'Document_Request__c.workflow-meta.xml'
+      SURVEY_WORKFLOW: 'Survey__c.workflow-meta.xml'
+      USER_WORKFLOW: 'User.workflow-meta.xml'
+      CUSTOM_METADATA_AWS_ASJUD_FILE: 'AWS_Setting.AWS_Adjudication_Upload.md-meta.xml'
+      TRUSTED_AWS_SITE_FILE: 'AWS.cspTrustedSite-meta.xml'
+      CUSTOM_METADATA_ECM_BULK_DECLARATION_FILE: 'ECM_Bulk_Declaration_Email.Bulk_ECM_Declaration.md-meta.xml'
+      CUSTOM_METADATA_MERIDIO_DECLARATION_FILE: 'Meridio_Declaration_Setting.Meridio_Declaration_Setting.md-meta.xml'
+      EMAIL_DECLARE_FILE: 'Trust_Accounts/Internal_Staff_Trust_Account_Notification.email'
+      EMAIL_DECLARE_XML_FILE: 'Trust_Accounts/Internal_Staff_Trust_Account_Notification.email-meta.xml'
+      BPOINT_FOR_LICENCING_NAMECREDENTIAL_FILENAME: 'BPOINT_FOR_LICENCING.namedCredential-meta.xml'
+      BPOINT_FOR_POLICY_NAMECREDENTIAL_FILENAME: 'BPOINT_FOR_POLICY.namedCredential-meta.xml'
+      BPOINT_FOR_OTHERS_NAMECREDENTIAL_FILENAME: 'BPOINT_FOR_OTHERS.namedCredential-meta.xml'
+      REMOTE_SETTING_AWS_URL_FILE: 'AWS_File.remoteSite-meta.xml'
+      REMOTE_SETTING_BPOINT_URL_UAT_FILE: 'BPoint_UAT.remoteSite-meta.xml'
+      REMOTE_EDQ_SELF_ACCESS_SITE: 'EDQ_SELF_ACCESS.remoteSite-meta.xml'
+      SITE_FILE: '${{secrets.FORCE_APP_DIR_ALL_ENV}}myQBCC.site'
+      SETTING_CASE_FILE: 'Case.settings-meta.xml'
+      PROFILE_FILE: '*.*'
+      QUEUE_MDT_BRISBANE_FILE: 'MDT_NOOF_Brisbane.queue-meta.xml'
+      QUEUE_TRUST_ADUIT_TEAM: 'Trust_Audit_Team.queue-meta.xml'
+      QUEUE_FINANCIAL_COMPLIANCE_TRUST_ACCOUNTS: 'Financial_Compliance_Trust_Accounts.queue-meta.xml'
+      QUEUE_EDUCATION_AND_ENGAGEMENT: 'Education_Engagement.queue-meta.xml'
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Add Input Options to Summary
+        run: |
+          echo '# Deployment Summary for ${{github.ref_name}}' >> $GITHUB_STEP_SUMMARY
+          echo '## Input Options' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo '${{ toJson(github.event.inputs) }}' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      ############################################################################
+      # Dependencies and plugin setup                                           ##
+      ############################################################################
+
+      # Get context information - branch name
+      - name: 'Get Context Information'
+        shell: bash
+        run: |
+          echo "BRANCH_NAME=$(echo ${{github.ref_name}})" >> $GITHUB_ENV
+          echo "SERVER_URL=$(echo ${{github.server_url}})" >> $GITHUB_ENV
+          echo "REPO_URL=$(echo ${{github.repository}})" >> $GITHUB_ENV
+          echo "RUN_ID=${{ github.run_id }}" >> $GITHUB_ENV
+
+      - name: 'Install Salesforce CLI'
+        run: |
+          wget https://developer.salesforce.com/media/salesforce-cli/sfdx/channels/stable/sfdx-linux-x64.tar.xz
+          mkdir ~/sfdx
+          tar xJf sfdx-linux-x64.tar.xz -C ~/sfdx --strip-components 1
+          echo "$HOME/sfdx/bin" >> $GITHUB_PATH
+          ~/sfdx/bin/sfdx version
+
+      # Checkout the source code
+      - name: 'Checkout source code'
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{env.BRANCH_NAME}}
+
+      - name: 'setup node version'
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: 'package.json'
+
+      - name: 'update_git_repo_url'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '"url": "[^"]*"'
+          replacement: '"url": "${{env.SERVER_URL}}/${{env.REPO_URL}}/tree/${{env.BRANCH_NAME}}"'
+          flags: "gim"                                      # Optional, defaults to "g"
+          include: "package.json"                         # Optional, defaults to ".*"
+          exclude: 'Salesforce/'                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                # Optional, defaults to 'utf8'
+          path: "./"
+
+      # Install dependencies set in package-lock.json locates in root of the repo
+      - name: Install Nodejs dependencies
+        run: npm install
+
+      # Get latest successful commit
+      #- run: echo "-- last successful commit --" + ${{steps.last_successful_commit.outputs.commit_hash}}
+      - name: 'Get last successful commit'
+        uses: simondotm/last-successful-commit-action@v2
+        id: last_successful_commit
+        with:
+          branch: ${{env.BRANCH_NAME}}
+          workflow_id: ${{env.WORKFLOW_ID}}
+          github_token: ${{env.GITHUB_TOKEN}}
+
+      - name: Set SFDX_API_VERSION
+        run: |
+          sourceApiVersion=$(jq '.sourceApiVersion | tonumber' ./sfdx-project.json)
+          echo SFDX_API_VERSION=$sourceApiVersion.0 >> $GITHUB_ENV
+          sfdx config:set apiVersion=$sourceApiVersion.0 --global
+          sfdx config:list
+          
+      - name: 'Output Change Log'
+        id: 'OutputChangeLog'
+        run: |
+          git log --pretty='%n%s - %an' --no-merges --name-status --branches=${{env.BRANCH_NAME}} ${{steps.last_successful_commit.outputs.commit_hash}}... > ./CHANGE_LOG.txt
+          echo "Change Log"
+          cat ./CHANGE_LOG.txt
+          echo '## Change Log' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat ./CHANGE_LOG.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      # Install Git Delta
+      - name: 'Install Git Delta'
+        if: ${{steps.last_successful_commit.outputs.commit_hash != ''}}
+        run: echo y | sfdx plugins:install sfdx-git-delta
+
+      # Compare and pickup delta change only#
+      # sfdx sgd:source:delta --to "HEAD" --from ${{steps.last_successful_commit.outputs.commit_hash}} --ignore .gitignore --output .
+      - name: 'Compare and pickup delta change only'
+        if: ${{steps.last_successful_commit.outputs.commit_hash != ''}}
+        shell: bash
+        run: sfdx sgd:source:delta --to "HEAD" --from ${{steps.last_successful_commit.outputs.commit_hash}} --ignore ignore --output .
+
+      - name: 'Deploy Full Package XML if no Delta'
+        if: ${{steps.last_successful_commit.outputs.commit_hash == ''}}
+        shell: bash
+        run: cat ${{env.FULL_PACKAGEXML_FILE}} > ${{env.PACKAGEXML_FILE}}
+
+      - name: inject branch based secret values
+        uses: noliran/branch-based-secrets@v1
+        with:
+          secrets: DEPLOY_SETTINGS
+
+      # retrieve secret values from repo secret into individual env vars
+      - name: split secret to env vars
+        run: |
+          npm run split --allsecret=${{secrets[env.DEPLOY_SETTINGS_NAME]}}
+
+      # Authenticate target org and default user
+      - name: 'Authenticate Target Org'
+        run: |
+          echo  ${{env.SFDX_URL}} > ~/SANDBOX_SFDX_URL.txt
+          sfdx auth:sfdxurl:store -f ~/SANDBOX_SFDX_URL.txt -a sfdxsandbox --setdefaultusername
+          # Set the login url for test class login
+          if ${{github.ref_name != 'master'}}
+          then
+            echo LOGIN_URL=https://qbcc--$SFENV_NAME.sandbox.my.salesforce.com >> $GITHUB_ENV
+          else 
+            echo "LOGIN_URL=https://qbcc.my.salesforce.com" >> $GITHUB_ENV
+          fi
+
+        # testing Logout package.xml file
+      - name: 'Display package.xml file'
+        shell: bash
+        run: cat ${{env.PACKAGEXML_FILE}}
+
+      - name: Check for Apex Class or Trigger in Package.xml
+        run: |
+          if grep -qiE "<name>Apex(Class|Trigger)</name>" ${{env.PACKAGEXML_FILE}}; then 
+            echo "APEX_CHANGES=true" >> $GITHUB_ENV 
+          else 
+            echo "APEX_CHANGES=false" >> $GITHUB_ENV 
+          fi
+
+      - name: 'Run test class extract script from NodeJs'
+        if: ${{steps.last_successful_commit.outputs.commit_hash != '' && env.APEX_CHANGES == 'true'}}
+        id: getTestClassString
+        run: npm run build --username=${{env.SF_USERNAME}} --loginUrl=${{env.LOGIN_URL}} --xmlFileName=${{env.PACKAGEXML_FILE}} --outputFileName=${{env.TESTSCRIPT_OUTPUT_FILENAME}}
+        env:
+          SF_DEPLOY_PWD: ${{env.SF_DEPLOY_PWD}}
+          SF_DEPLOY_TOKEN: ${{env.SF_DEPLOY_TOKEN}}
+
+
+      - name: 'Create empty test class list'
+        if: ${{steps.last_successful_commit.outputs.commit_hash == '' || env.APEX_CHANGES == 'false'}}
+        run: touch ${{env.TESTSCRIPT_OUTPUT_FILENAME}}
+
+      - name: Read ${{env.TESTSCRIPT_OUTPUT_FILENAME}} content
+        id: testclass
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ${{env.TESTSCRIPT_OUTPUT_FILENAME}}
+
+      #  testing Logout testclass step output file
+      - name: 'Logout testclass step output'
+        shell: bash
+        run: echo ${{steps.testclass.outputs.content}}
+
+        #############################################################################
+        ## Replace steps                                                           ##
+        #############################################################################
+      - name: 'update_insurance_policies_org_wide_address_in_policy'
+        if: ${{env.BRANCH_NAME != 'master'}}      
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '<senderAddress>insurancepolicies@qbcc\.qld\.gov\.au'
+          replacement: '<senderAddress>${{env.ORG_WIDE_ADDRESS_INSURANCE_POLICY_EMAIL}}'
+          flags: "g"                                      # Optional, defaults to "g"
+          include: ${{env.POLICY_WORKFLOW}}               # Optional, defaults to ".*"
+          exclude:  '.^'                                  # Optional, defaults to '.^'
+          encoding: 'utf8'                                # Optional, defaults to 'utf8'
+          path: ${{env.WORKFLOW_DIR}}
+
+      - name: 'update_insurance_policies_org_wide_address_in_policytransaction'
+        if: ${{env.BRANCH_NAME != 'master'}}      
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '<senderAddress>insurancepolicies@qbcc\.qld\.gov\.au'
+          replacement: '<senderAddress>${{env.ORG_WIDE_ADDRESS_INSURANCE_POLICY_EMAIL}}'
+          flags: "g"                                      # Optional, defaults to "g"
+          include: ${{env.POLICY_TRANSACTION_WORKFLOW}}   # Optional, defaults to ".*"
+          exclude: '.^'                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                # Optional, defaults to 'utf8'
+          path: ${{env.WORKFLOW_DIR}}
+
+      - name: 'update_workflow_endpoints_new'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '<endpointUrl>https://.*?(?=/)'
+          replacement: '<endpointUrl>https://${{env.AWS_INTEGRATION}}'
+          flags: "g"                                      # Optional, defaults to "g"
+          include:                                        # Optional, defaults to ".*"
+          exclude: ${{env.SURVEY_WORKFLOW}}               # Optional, defaults to '.^'
+          encoding: 'utf8'                                # Optional, defaults to 'utf8'
+          path: ${{env.WORKFLOW_DIR}}
+
+      - name: 'update_survey_workflow_endpoints1'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '(<fullName>C_Survey_Send</fullName>[\n\s]*.*[\n\s]*.*[\n\s]*<endpointUrl>)https://qbccrs.au1.qualtrics.com/WRQualtricsServer/sfApi.php\?r=outboundMessage&amp;.*(?=</endpointUrl|\n)'
+          replacement: '$1${{env.QUALTRICS_LICENSE_FEEDBACK_SURVEY_SEND_URL}}</endpointUrl>'
+          flags: "g"                                      # Optional, defaults to "g"
+          include: ${{env.SURVEY_WORKFLOW}}               # Optional, defaults to ".*"
+          exclude: '.^'                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                # Optional, defaults to 'utf8'
+          path: ${{env.WORKFLOW_DIR}}
+
+      - name: 'update_survey_workflow_endpoints2'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '(<fullName>EDR_Survey_Send</fullName>[\n\s]*.*[\n\s]*.*[\n\s]*<endpointUrl>)https://qbccrs.au1.qualtrics.com/WRQualtricsServer/sfApi.php\?r=outboundMessage&amp;.*(?=</endpointUrl|\n)'
+          replacement: '$1${{env.QUALTRICS_EDR_SURVEY_SEND_URL}}</endpointUrl>'
+          flags: "g"                                      # Optional, defaults to "g"
+          include: ${{env.SURVEY_WORKFLOW}}               # Optional, defaults to ".*"
+          exclude: '.^'                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                # Optional, defaults to 'utf8'
+          path: ${{env.WORKFLOW_DIR}}
+
+      - name: 'update_survey_workflow_endpoints3'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '(<fullName>Trigger_Survey_Send</fullName>[\n\s]*.*[\n\s]*.*[\n\s]*<endpointUrl>)https://qbccrs.au1.qualtrics.com/WRQualtricsServer/sfApi.php\?r=outboundMessage&amp;.*(?=</endpointUrl|\n)'
+          replacement: '$1${{env.QUALTRICS_TRIGGER_SURVEY_SEND_URL}}</endpointUrl>'
+          flags: "g"                                      # Optional, defaults to "g"
+          include: ${{env.SURVEY_WORKFLOW}}               # Optional, defaults to ".*"
+          exclude: '.^'                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                # Optional, defaults to 'utf8'
+          path: ${{env.WORKFLOW_DIR}}
+
+      - name: 'update_survey_workflow_endpoints4'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '(<fullName>Online_Transaction_Feedback_Survey_Send</fullName>[\n\s]*.*[\n\s]*.*[\n\s]*<endpointUrl>)https://qbccrs.au1.qualtrics.com/WRQualtricsServer/sfApi.php\?r=outboundMessage&amp;.*(?=</endpointUrl|\n)'
+          replacement: '$1${{env.QUALTRICS_ONLINE_TRANSACTION_FEEDBACK_SURVEY_SEND_URL}}</endpointUrl>'
+          flags: "g"                                      # Optional, defaults to "g"
+          include: ${{env.SURVEY_WORKFLOW}}               # Optional, defaults to ".*"
+          exclude: '.^'                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                # Optional, defaults to 'utf8'
+          path: ${{env.WORKFLOW_DIR}}
+
+      - name: 'update_survey_workflow_endpoints5'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '(<fullName>Insurance_Approved_Feedback_Survey_Send</fullName>[\n\s]*.*[\n\s]*.*[\n\s]*<endpointUrl>)https://qbccrs.au1.qualtrics.com/WRQualtricsServer/sfApi.php\?r=outboundMessage&amp;.*(?=</endpointUrl|\n)'
+          replacement: '$1${{env.QUALTRICS_INSURANCE_APPROVED_FEEDBACK_SURVEY_SEND_URL}}</endpointUrl>'
+          flags: "g"                                      # Optional, defaults to "g"
+          include: ${{env.SURVEY_WORKFLOW}}               # Optional, defaults to ".*"
+          exclude: '.^'                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                # Optional, defaults to 'utf8'
+          path: ${{env.WORKFLOW_DIR}}
+
+      - name: 'update_survey_workflow_endpoints6'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '(<fullName>Insurance_Declined_Feedback_Surve_Send</fullName>[\n\s]*.*[\n\s]*.*[\n\s]*<endpointUrl>)https://qbccrs.au1.qualtrics.com/WRQualtricsServer/sfApi.php\?r=outboundMessage&amp;.*(?=</endpointUrl|\n)'
+          replacement: '$1${{env.QUALTRICS_INSURANCE_DECLINED_FEEDBACK_SURVEY_SEND_URL}}</endpointUrl>'
+          flags: "g"                                      # Optional, defaults to "g"
+          include: ${{env.SURVEY_WORKFLOW}}               # Optional, defaults to ".*"
+          exclude: '.^'                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                # Optional, defaults to 'utf8'
+          path: ${{env.WORKFLOW_DIR}}
+
+      - name: 'update_survey_workflow_endpoints7'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '(<fullName>IRU_Survey_Send</fullName>[\n\s]*.*[\n\s]*.*[\n\s]*<endpointUrl>)https://qbccrs.au1.qualtrics.com/WRQualtricsServer/sfApi.php\?r=outboundMessage&amp;.*(?=</endpointUrl|\n)'
+          replacement: '$1${{env.QUALTRICS_IRU_SURVEY_SEND_URL}}</endpointUrl>'
+          flags: "g"                                      # Optional, defaults to "g"
+          include: ${{env.SURVEY_WORKFLOW}}               # Optional, defaults to ".*"
+          exclude: '.^'                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                # Optional, defaults to 'utf8'
+          path: ${{env.WORKFLOW_DIR}}
+
+      - name: 'update_survey_workflow_endpoints8'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '(<fullName>Email_Service_Survey_Rquest_Send</fullName>[\n\s]*.*[\n\s]*.*[\n\s]*<endpointUrl>)https://qbccrs.au1.qualtrics.com/WRQualtricsServer/sfApi.php\?r=outboundMessage&amp;.*(?=</endpointUrl|\n)'
+          replacement: '$1${{env.QUALTRICS_EMAIL_SERVICE_SURVEY_SEND_URL}}</endpointUrl>'
+          flags: "g"                                      # Optional, defaults to "g"
+          include: ${{env.SURVEY_WORKFLOW}}               # Optional, defaults to ".*"
+          exclude: '.^'                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                # Optional, defaults to 'utf8'
+          path: ${{env.WORKFLOW_DIR}}
+
+      - name: 'update_survey_workflow_endpoints9'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '(<fullName>License_Feedback_Survey_Send</fullName>[\n\s]*.*[\n\s]*.*[\n\s]*<endpointUrl>)https://qbccrs.au1.qualtrics.com/WRQualtricsServer/sfApi.php\?r=outboundMessage&amp;.*(?=</endpointUrl|\n)'
+          replacement: '$1${{env.QUALTRICS_LICENSE_FEEDBACK_SURVEY_SEND_URL}}</endpointUrl>'
+          flags: "g"                                      # Optional, defaults to "g"
+          include: ${{env.SURVEY_WORKFLOW}}               # Optional, defaults to ".*"
+          exclude: '.^'                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                # Optional, defaults to 'utf8'
+          path: ${{env.WORKFLOW_DIR}}
+
+      - name: 'update_lms_on_user_outbound_message'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '(<fullName>lmsUserEvent</fullName>[\n\s]*.*[\n\s]*.*[\n\s]*<endpointUrl>)INTEGRATION_ENGINE(?=.*?</endpointUrl|\n)'
+          replacement: '$1https://${{env.AWS_INTEGRATION}}'
+          flags: "g"                                      # Optional, defaults to "g"
+          include: ${{env.USER_WORKFLOW}}                 # Optional, defaults to ".*"
+          exclude: '.^'                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                # Optional, defaults to 'utf8'
+          path: ${{env.WORKFLOW_DIR}}
+
+      # ###### EMAIL job  ######
+      # replace-email:
+      # add secret TRUST_ACCOUNT_EMAIL = ?????
+      - name: 'update_trust_notification_email'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '(<fullName>Internal_Staff_Trust_Account_Notification</fullName>[\r\n]*.*?<ccEmails>).*?(</ccEmails>)'
+          replacement: '$1${{env.TRUST_ACCOUNT_EMAIL }}$2'
+          flags: "g"                                      # Optional, defaults to "g"
+          include: ${{env.TRUST_ACCOUNT_WORKFLOW}}        # Optional, defaults to ".*"
+          exclude: '.^'                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                # Optional, defaults to 'utf8'
+          path: ${{env.WORKFLOW_DIR}}
+
+      - name: 'prod_update_alert_recipients_infoATqbcc'
+        if: ${{env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'STAGING'}}
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: "(<fullName>(SD15_CFF_Case_Creation_Records|SD15_CFF_Case_Closure_Records)</fullName>.*?<ccEmails>).*?(?=</ccEmails>)"
+          replacement: '$1${{env.RECORD_EMAIL_ADDRESS }}'
+          flags: "gis"                                      # Optional, defaults to "g"
+          include: ${{env.CASE_WORKFLOW}}                 # Optional, defaults to ".*"
+          exclude: '.^'                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                # Optional, defaults to 'utf8'
+          path: ${{env.WORKFLOW_DIR}}
+
+
+      - name: 'update_AWS_namedcred_endpoints'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '<endpoint>https://.+?(?=<)'
+          replacement: "<endpoint>https://${{env.AWS_INTEGRATION}}"
+          flags: "gim"                                          # Optional, defaults to "g"
+          include: ${{env.AWS_INTEGRATION_NAMECREDENTIAL_FILENAME}}    # Optional, defaults to ".*"
+          exclude: ".^"                                         # Optional, defaults to '.^'
+          encoding: "utf8"                                      # Optional, defaults to 'utf8'
+          path: ${{env.NAMECREDENTIAL_DIR}}
+
+      # add secret AWS_INTEGRATION_CERT = ?????
+      - name: 'update_AWS_namedcred_endpoints_auth'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '<certificate>.+?(?=<)'
+          replacement: '<certificate>${{env.AWS_INTEGRATION_CERT}}'
+          flags: "gim"                                          # Optional, defaults to "g"
+          include: ${{env.AWS_INTEGRATION_NAMECREDENTIAL_FILENAME}}    # Optional, defaults to ".*"
+          exclude: '.^'                                         # Optional, defaults to '.^'
+          encoding: 'utf8'                                      # Optional, defaults to 'utf8'
+          path: ${{env.NAMECREDENTIAL_DIR}}
+
+      # ###### bPoint credential replace job  ######
+      # replace-bpoint:
+      # add secret BPOINT_ENDPOINT = ?????
+      - name: 'update_BPoint_endpoints'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '<endpoint/>'
+          replacement: '<endpoint>${{env.BPOINT_ENDPOINT}}</endpoint>'
+          flags: "gim"                                                      # Optional, defaults to "g"
+          include: 'BPOINT.*.namedCredential-meta.xml'                      # Optional, defaults to ".*"
+          exclude: '.^'                                                     # Optional, defaults to '.^'
+          encoding: 'utf8'                                                  # Optional, defaults to 'utf8'
+          path: ${{env.NAMECREDENTIAL_DIR}}
+
+      # add secret BPOINT_USERNAME_FOR_OTHERS = ?????
+      - name: 'update_bPoint_username_for_Licencing'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '<username/>'
+          replacement: '<username>${{env.BPOINT_USERNAME_FOR_LICENCING}}|${{env.BPOINT_MERCHANTID_FOR_LICENCING}}</username>'
+          flags: "gim"                                                      # Optional, defaults to "g"
+          include: ${{env.BPOINT_FOR_LICENCING_NAMECREDENTIAL_FILENAME}}    # Optional, defaults to ".*"
+          exclude: '.^'                                                     # Optional, defaults to '.^'
+          encoding: 'utf8'                                                   # Optional, defaults to 'utf8'
+          path: ${{env.NAMECREDENTIAL_DIR}}
+
+      # add secret BPOINT_PASSWORD_FOR_OTHERS = ?????
+      - name: 'update_bPoint_password_for_Licencing'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '<password/>'
+          replacement: '<password>${{env.BPOINT_PASSWORD_FOR_LICENCING}}</password>'
+          flags: "gim"                                                      # Optional, defaults to "g"
+          include: ${{env.BPOINT_FOR_LICENCING_NAMECREDENTIAL_FILENAME}}    # Optional, defaults to ".*"
+          exclude: '.^'                                                     # Optional, defaults to '.^'
+          encoding: 'utf8'                                                  # Optional, defaults to 'utf8'
+          path: ${{env.NAMECREDENTIAL_DIR}}
+
+
+      # add secret BPOINT_USERNAME_FOR_OTHERS = ?????
+      - name: 'update_bPoint_username_for_Others'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '<username/>'
+          replacement: '<username>${{env.BPOINT_USERNAME_FOR_OTHERS}}|${{env.BPOINT_MERCHANTID_FOR_OTHERS}}</username>'
+          flags: "gim"                                                    # Optional, defaults to "g"
+          include: ${{env.BPOINT_FOR_OTHERS_NAMECREDENTIAL_FILENAME}}     # Optional, defaults to ".*"
+          exclude: '.^'                                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                                # Optional, defaults to 'utf8'
+          path: ${{env.NAMECREDENTIAL_DIR}}
+
+      # add secret BPOINT_PASSWORD_FOR_OTHERS = ?????
+      - name: 'update_bpoint_password_for_others'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '<password/>'
+          replacement: '<password>${{env.BPOINT_PASSWORD_FOR_OTHERS}}</password>'
+          flags: "gim"                                                    # Optional, defaults to "g"
+          include: ${{env.BPOINT_FOR_OTHERS_NAMECREDENTIAL_FILENAME}}     # Optional, defaults to ".*"
+          exclude: '.^'                                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                                # Optional, defaults to 'utf8'
+          path: ${{env.NAMECREDENTIAL_DIR}}
+
+      - name: 'update_bPoint_username_for_POLICY'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '<username/>'
+          replacement: '<username>${{env.BPOINT_USERNAME_FOR_POLICY}}|${{env.BPOINT_MERCHANTID_FOR_POLICY}}</username>'
+          flags: "gim"                                                    # Optional, defaults to "g"
+          include: ${{env.BPOINT_FOR_POLICY_NAMECREDENTIAL_FILENAME}}     # Optional, defaults to ".*"
+          exclude: '.^'                                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                                # Optional, defaults to 'utf8'
+          path: ${{env.NAMECREDENTIAL_DIR}}
+
+      # add secret BPOINT_PASSWORD_FOR_POLICY = ?????
+      - name: 'update_bpoint_password_for_POLICY'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '<password/>'
+          replacement: '<password>${{env.BPOINT_PASSWORD_FOR_POLICY}}</password>'
+          flags: "gim"                                                    # Optional, defaults to "g"
+          include: ${{env.BPOINT_FOR_POLICY_NAMECREDENTIAL_FILENAME}}     # Optional, defaults to ".*"
+          exclude: '.^'                                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                                # Optional, defaults to 'utf8'
+          path: ${{env.NAMECREDENTIAL_DIR}}
+
+      # Set namedCredential values - awsAccessSecret
+      - name: 'update_aws_svc_endpoint'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '<endpoint/>'
+          replacement: '<endpoint>${{env.AWS_SERVICES_ENDPOINT}}</endpoint>'
+          flags: "gim"                                        # Optional, defaults to "g"
+          include: ${{env.NAMECREDENTIAL_AWS_SVC_FILE}}       # Optional, defaults to ".*"
+          exclude: '.^'                                       # Optional, defaults to '.^'
+          encoding: 'utf8'                                    # Optional, defaults to 'utf8'
+          path: ${{env.NAMECREDENTIAL_DIR}}
+
+      # AWS_SV4 endpoint
+      # add secret AWS_ENDPOINT = ?????
+      - name: 'update_aws_endpoint'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '<endpoint/>'
+          replacement: '<endpoint>${{env.AWS_API_ENDPOINT}}</endpoint>'
+          flags: "gim"                                          # Optional, defaults to "g"
+          include: ${{env.NAMECREDENTIAL_AWS_SV4_FILENAME}}     # Optional, defaults to ".*"
+          exclude: '.^'                                         # Optional, defaults to '.^'
+          encoding: 'utf8'                                      # Optional, defaults to 'utf8'
+          path: ${{env.NAMECREDENTIAL_DIR}}
+
+      # ###### namedCredential replacement job  ######
+      # replace-name-credentails:
+      # Set namedCredential values - awsAccessKey
+
+      - name: 'update_awsAccessKey_svc'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: "<awsAccessKey/>"
+          replacement: "<awsAccessKey>${{env.AWS_ACCESSKEY}}</awsAccessKey>"
+          flags: "gim"                                      # Optional, defaults to "g"
+          include: ${{env.NAMECREDENTIAL_AWS_SVC_FILE}}     # Optional, defaults to ".*"
+          exclude: '.^'                                     # Optional, defaults to '.^'
+          encoding: 'utf8'                                  # Optional, defaults to 'utf8'
+          path: ${{env.NAMECREDENTIAL_DIR}}
+
+      - name: 'update_awsAccessKey_sv4'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: "<awsAccessKey/>"
+          replacement: "<awsAccessKey>${{env.AWS_ACCESSKEY}}</awsAccessKey>"
+          flags: "gim"                                          # Optional, defaults to "g"
+          include: ${{env.NAMECREDENTIAL_AWS_SV4_FILENAME}}     # Optional, defaults to ".*"
+          exclude: '.^'                                         # Optional, defaults to '.^'
+          encoding: 'utf8'                                      # Optional, defaults to 'utf8'
+          path: ${{env.NAMECREDENTIAL_DIR}}
+
+      - name: 'update_awsAccessKey_declaration'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: "<awsAccessKey/>"
+          replacement: "<awsAccessKey>${{env.AWS_ACCESSKEY}}</awsAccessKey>"
+          flags: "gim"                                              # Optional, defaults to "g"
+          include: ${{env.DECLARATION3_NAMECREDENTIAL_FILENAME}}    # Optional, defaults to ".*"
+          exclude: '.^'                                             # Optional, defaults to '.^'
+          encoding: 'utf8'                                          # Optional, defaults to 'utf8'
+          path: ${{env.NAMECREDENTIAL_DIR}}
+
+      # Set namedCredential values - awsAccessSecret
+      - name: 'update_awsAccessSecret_svc'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: ' <awsAccessSecret/>'
+          replacement: '<awsAccessSecret>${{env.AWS_ACCESSSECRET}}</awsAccessSecret>'
+          flags: "g"                                        # Optional, defaults to "g"
+          include: ${{env.NAMECREDENTIAL_AWS_SVC_FILE}}     # Optional, defaults to ".*"
+          exclude: '.^'                                     # Optional, defaults to '.^'
+          encoding: 'utf8'                                  # Optional, defaults to 'utf8'
+          path: ${{env.NAMECREDENTIAL_DIR}}                 # Optional, defaults to '.'
+
+      - name: 'update_awsAccessSecret_sv4'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: ' <awsAccessSecret/>'
+          replacement: '<awsAccessSecret>${{env.AWS_ACCESSSECRET}}</awsAccessSecret>'
+          flags: "g"                                          # Optional, defaults to "g"
+          include: ${{env.NAMECREDENTIAL_AWS_SV4_FILENAME}}   # Optional, defaults to ".*"
+          exclude: '.^'                                       # Optional, defaults to '.^'
+          encoding: 'utf8'                                    # Optional, defaults to 'utf8'
+          path: ${{env.NAMECREDENTIAL_DIR}}                   # Optional, defaults to '.'
+
+      - name: 'update_awsAccessSecret_declaration'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: ' <awsAccessSecret/>'
+          replacement: '<awsAccessSecret>${{env.AWS_ACCESSSECRET}}</awsAccessSecret>'
+          flags: "g"                                              # Optional, defaults to "g"
+          include: ${{env.DECLARATION3_NAMECREDENTIAL_FILENAME}}  # Optional, defaults to ".*"
+          exclude: '.^'                                           # Optional, defaults to '.^'
+          encoding: 'utf8'                                        # Optional, defaults to 'utf8'
+          path: ${{env.NAMECREDENTIAL_DIR}}                       # Optional, defaults to '.'
+
+      - name: 'update_awsAccessKey_AdjudicationDecision'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: 'AccessKey'
+          replacement: '${{env.AWS_ACCESSKEY}}'
+          flags: "gim"                                          # Optional, defaults to "g"
+          include: ${{env.CUSTOM_METADATA_AWS_ASJUD_FILE}}      # Optional, defaults to ".*"
+          exclude: '.^'                                         # Optional, defaults to '.^'
+          encoding: 'utf8'                                      # Optional, defaults to 'utf8'
+          path: ${{env.CUSTOM_METADATA_DIR}}
+
+      - name: 'update_awsAccessSecret_AdjudicationDecision'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: 'AccessSecret'
+          replacement: '${{env.AWS_ACCESSSECRET}}'
+          flags: "gim"                                          # Optional, defaults to "g"
+          include: ${{env.CUSTOM_METADATA_AWS_ASJUD_FILE}}      # Optional, defaults to ".*"
+          exclude: '.^'                                         # Optional, defaults to '.^'
+          encoding: 'utf8'                                      # Optional, defaults to 'utf8'
+          path: ${{env.CUSTOM_METADATA_DIR}}
+
+        # Set
+      - name: 'update_awsBucketName_AdjudicationDecision'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: 'BucketName'
+          replacement: '${{env.AWS_ADJUDICATION_DECISION_BUCKET_NAME}}'
+          flags: "gim"                                        # Optional, defaults to "g"
+          include: ${{env.CUSTOM_METADATA_AWS_ASJUD_FILE}}    # Optional, defaults to ".*"
+          exclude: '.^'                                       # Optional, defaults to '.^'
+          encoding: 'utf8'                                    # Optional, defaults to 'utf8'
+          path: ${{env.CUSTOM_METADATA_DIR}}
+
+      - name: 'update_awsBucketName_CSPTrustedSites'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: 'BucketName'
+          replacement: '${{env.AWS_ADJUDICATION_DECISION_BUCKET_NAME}}'
+          flags: "gim"                                    # Optional, defaults to "g"
+          include: ${{env.TRUSTED_AWS_SITE_FILE}}         # Optional, defaults to ".*"
+          exclude: '.^'                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                # Optional, defaults to 'utf8'
+          path: ${{env.TRUSTED_SITE_DIR}}
+
+      - name: 'update_Bulk_ECM_Declaration_Email'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: 'bulkECMEmailSendTo'
+          replacement: '${{env.BULK_ECM_DECLARATION_EMAIL}}'
+          flags: "gim"                                                  # Optional, defaults to "g"
+          include: ${{env.CUSTOM_METADATA_ECM_BULK_DECLARATION_FILE}}   # Optional, defaults to ".*"
+          exclude: '.^'                                                 # Optional, defaults to '.^'
+          encoding: 'utf8'                                              # Optional, defaults to 'utf8'
+          path: ${{env.CUSTOM_METADATA_DIR}}
+
+      - name: 'update_pls_disputes_passwd'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '<password>.+?(?=</password>)'
+          replacement: '<password>${{secrets.PLSPLUS_DISPUTES_PWD_ALL_ENV}}'
+          flags: "gis"                                                  # Optional, defaults to "g"
+          include: ${{env.NAMECREDENTIAL_PLSPLUS_DISPUTES_FILE}}        # Optional, defaults to ".*"
+          exclude: '.^'                                                 # Optional, defaults to '.^'
+          encoding: 'utf8'                                              # Optional, defaults to 'utf8'
+          path: ${{env.NAMECREDENTIAL_DIR}}
+
+      - name: 'update_pls_notworks_passwd'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '<password>.+?(?=</password>)'
+          replacement: '<password>${{secrets.PLSPLUS_NOTIFICATION_PWD_ALL_ENV}}'
+          flags: "gis"                                                  # Optional, defaults to "g"
+          include: ${{env.NAMECREDENTIAL_PLSPLUS_NOTIFICATION_FILE}}   # Optional, defaults to ".*"
+          exclude: '.^'                                                 # Optional, defaults to '.^'
+          encoding: 'utf8'                                              # Optional, defaults to 'utf8'
+          path: ${{env.NAMECREDENTIAL_DIR}}
+
+      - name: 'update_pls_hwisifi_passwd'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '<password>.+?(?=</password>)'
+          replacement: '<password>${{secrets.PLSPLUS_SIFI_PWD_ALL_ENV}}'
+          flags: "gis"                                                  # Optional, defaults to "g"
+          include: ${{env.NAMECREDENTIAL_PLSPLUS_SIFI_FILE}}   # Optional, defaults to ".*"
+          exclude: '.^'                                                 # Optional, defaults to '.^'
+          encoding: 'utf8'                                              # Optional, defaults to 'utf8'
+          path: ${{env.NAMECREDENTIAL_DIR}}
+
+      - name: 'update_pls_sfgenuse_passwd'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '<password>.+?(?=</password>)'
+          replacement: '<password>${{secrets.PLSPLUS_SFGENUSE_PWD_ALL_ENV}}'
+          flags: "gis"                                                  # Optional, defaults to "g"
+          include: ${{env.NAMECREDENTIAL_PLSPLUS_OTHER_FILE}}   # Optional, defaults to ".*"
+          exclude: '.^'                                                 # Optional, defaults to '.^'
+          encoding: 'utf8'                                              # Optional, defaults to 'utf8'
+          path: ${{env.NAMECREDENTIAL_DIR}}
+
+      # DECLARATION3
+      # add secret DECLARATION3_ENDPOINT = https://.+?(?=<)
+      # Set namedCredential values - DECLARATION3 endpoint
+      - name: 'update_declarationS3_endpoint'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '<endpoint>https://.+?(?=<)'
+          replacement: '<endpoint>${{env.AWS_DECLARATIONS3_ENDPOINT}}'
+          flags: "gim"                                                # Optional, defaults to "g"
+          include: ${{env.DECLARATION3_NAMECREDENTIAL_FILENAME}}      # Optional, defaults to ".*"
+          exclude: '.^'                                               # Optional, defaults to '.^'
+          encoding: 'utf8'                                            # Optional, defaults to 'utf8'
+          path: ${{env.NAMECREDENTIAL_DIR}}
+
+      - name: 'update_pls_endpoints'
+        if: ${{env.BRANCH_NAME != 'master' && env.BRANCH_NAME != 'UAT' && github.event.inputs.PLSPROD == 'false'}}
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '<endpoint>https://information.qld'
+          replacement: '<endpoint>https://uat-plsp.information.qld'
+          flags: "g"                                      # Optional, defaults to "g"
+          include: ${{env.NAMECREDENTIAL_PLSPlus}}        # Optional, defaults to ".*"
+          exclude: '.^'                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                # Optional, defaults to 'utf8'
+          path: ${{env.NAMECREDENTIAL_DIR}}
+
+      - name: 'update_email_template'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: 'EmailtoSalesforce.+?(?=<|\n)'
+          replacement: 'EmailtoSalesforce${{env.EMAIL_TO_SF_ENV}}'
+          flags: "gim"                                                              # Optional, defaults to "g"
+          include: '.*'                                                             # Optional, defaults to ".*"
+          exclude: '.^'                                                             # Optional, defaults to '.^'
+          encoding: 'utf8'                                                          # Optional, defaults to 'utf8'
+          path: ${{env.EMAIL_DIR}}
+
+      - name: 'update_emailtoSF_MeridioCustomSetting'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '(<value.*>)EmailtoSalesforce.+?(?=</value>)'
+          replacement: '$1EmailtoSalesforce${{env.EMAIL_TO_SF_ENV}}'
+          flags: "gim"                                                    # Optional, defaults to "g"
+          include: ${{env.CUSTOM_METADATA_MERIDIO_DECLARATION_FILE}}      # Optional, defaults to ".*"
+          exclude: '.^'                                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                                # Optional, defaults to 'utf8'
+          path: ${{env.CUSTOM_METADATA_DIR}}
+
+      - name: 'update_emailForMeridioCustomSetting'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '(Email_Address__c</field>[\n\s]*<value.*?>).*(?=<|\n)'
+          replacement: '$1${{env.EMAIL_MERIDIO_DECLARATION }}</value>'
+          flags: "gim"                                                    # Optional, defaults to "g"
+          include: ${{env.CUSTOM_METADATA_MERIDIO_DECLARATION_FILE}}      # Optional, defaults to ".*"
+          exclude: '.^'                                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                                # Optional, defaults to 'utf8'
+          path: ${{env.CUSTOM_METADATA_DIR}}
+
+      - name: 'update_AWS_File_remote_settings'
+        if: ${{env.BRANCH_NAME != 'master'}}
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: 'https://.*?.s3.ap-southeast-2.amazonaws.com'
+          replacement: 'https://${{env.AWS_ADJUDICATION_DECISION_BUCKET_NAME}}.s3.ap-southeast-2.amazonaws.com'
+          flags: "gim"                                        # Optional, defaults to "g"
+          include: ${{env.REMOTE_SETTING_AWS_URL_FILE}}    # Optional, defaults to ".*"
+          exclude: '.^'                                       # Optional, defaults to '.^'
+          encoding: 'utf8'                                    # Optional, defaults to 'utf8'
+          path: ${{env.REMOTE_SETTING_DIR}}
+
+
+      - name: 'update_bpoint_remote_settings'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: 'https://www.bpoint.com.au'
+          replacement: '${{env.BPOINT_ENDPOINT}}'
+          flags: "gim"                                        # Optional, defaults to "g"
+          include: ${{env.REMOTE_SETTING_BPOINT_URL_UAT_FILE}}    # Optional, defaults to ".*"
+          exclude: '.^'                                       # Optional, defaults to '.^'
+          encoding: 'utf8'                                    # Optional, defaults to 'utf8'
+          path: ${{env.REMOTE_SETTING_DIR}}
+
+      - name: 'update_edq_remote_settings'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: 'https://.*?.visualforce.com'
+          replacement: 'https://qbcc--${{env.SFENV_NAME}}--edq.sandbox.vf.force.com'
+          flags: "gim"                                      # Optional, defaults to "g"
+          include: ${{env.REMOTE_EDQ_SELF_ACCESS_SITE}}     # Optional, defaults to ".*"
+          exclude: '.^'                                     # Optional, defaults to '.^'
+          encoding: 'utf8'                                  # Optional, defaults to 'utf8'
+          path: ${{env.REMOTE_SETTING_DIR}}
+          
+      - name: 'fix_email_to_case'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '<emailAddress>casecontact(.*)@qbcc.qld.gov.au'
+          replacement: '<emailAddress>${{env.FIX_EMAIL_TO_CASE }}'
+          flags: "gim"                                      # Optional, defaults to "g"
+          include: ${{env.SETTING_CASE_FILE}}    # Optional, defaults to ".*"
+          exclude: '.^'                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                # Optional, defaults to 'utf8'
+          path: ${{env.SRC_SETTING_DIR}}
+
+      # <!--  Remove Social Post  -->
+      - name: 'remove_social_post_from_profilesLayoutAssignments'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '<layoutAssignments>\s+<layout>SocialPost-Social Post Layout</layout>\s+</layoutAssignments>'
+          replacement: ''
+          flags: "sg"                                     # Optional, defaults to "g"
+          include:                                        # Optional, defaults to ".*"
+          exclude: '.^'                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                # Optional, defaults to 'utf8'
+          path: ${{env.SRC_PROFILE_DIR}}
+
+      - name: 'remove_social_post_from_tabVisibilities'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '\s*<tabVisibilities>\s*<tab>standard-SocialPersona</tab>\s*<visibility>DefaultOff</visibility>\s*</tabVisibilities>'
+          replacement: ''
+          flags: "gim"                                     # Optional, defaults to "g"
+          include:                                        # Optional, defaults to ".*"
+          exclude: '.^'                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                # Optional, defaults to 'utf8'
+          path: ${{env.SRC_PROFILE_DIR}}
+
+        # <!--  Remove Queue Membership  -->
+      # needs:
+      - name: 'remove_queue_membership_from_the_queue_files'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '\s*<queueMembers>.*</queueMembers>'
+          replacement: ''
+          flags: "gim"                                     # Optional, defaults to "g"
+          include:                                       # Optional, defaults to ".*"
+          exclude: '.^'                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                # Optional, defaults to 'utf8'
+          path: ${{env.SRC_QUEUES_DIR}}
+
+      - name: 'update_queue_MDT_NOOF_Brisbane_update_email_sandbox'
+        if: ${{env.BRANCH_NAME != 'master'}}
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '<email>qbcc.complaints.bne@qbcc.qld.gov.au'
+          replacement: '<email>qbcc.complaints.bne@qbcc.qld.gov.au.${{env.SFENV_NAME }}'
+          flags: "gim"                                     # Optional, defaults to "g"
+          include: ${{env.QUEUE_MDT_BRISBANE_FILE}}                                      # Optional, defaults to ".*"
+          exclude: '.^'                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                # Optional, defaults to 'utf8'
+          path: ${{env.SRC_QUEUES_DIR}}
+
+      - name: 'update_queue_email_trust_audit_team'
+        if: ${{env.BRANCH_NAME != 'master'}}
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '<email>trustaccounts@qbcc.qld.gov.au'
+          replacement: '<email>trustaccounts@qbcc.qld.gov.au.${{env.SFENV_NAME }}'
+          flags: "gim"                                    # Optional, defaults to "g"
+          include: ${{env.QUEUE_TRUST_ADUIT_TEAM}}        # Optional, defaults to ".*"
+          exclude: '.^'                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                # Optional, defaults to 'utf8'
+          path: ${{env.SRC_QUEUES_DIR}}
+
+      - name: 'update_queue_email_for_financial_compliance_trust_accounts'
+        if: ${{env.BRANCH_NAME != 'master'}}
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '<email>trustaccounts@qbcc.qld.gov.au'
+          replacement: '<email>trustaccounts@qbcc.qld.gov.au.${{env.SFENV_NAME }}'
+          flags: "gim"                                    # Optional, defaults to "g"
+          include: ${{env.QUEUE_FINANCIAL_COMPLIANCE_TRUST_ACCOUNTS}}        # Optional, defaults to ".*"
+          exclude: '.^'                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                # Optional, defaults to 'utf8'
+          path: ${{env.SRC_QUEUES_DIR}}
+      
+      - name: 'update_queue_email'
+        if: ${{env.BRANCH_NAME != 'master'}}
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '(<email>)(.*?)(</email>)'
+          replacement: '$1$2.${{env.SFENV_NAME }}$3'
+          flags: "gim"                                    # Optional, defaults to "g"
+          include: '.queue-meta.xml'                      # Optional, defaults to ".*"
+          exclude: '.^'                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                # Optional, defaults to 'utf8'
+          path: ${{env.SRC_QUEUES_DIR}}
+
+      - name: 'update_queue_email_for_education_and_engagement'
+        if: ${{env.BRANCH_NAME != 'master'}}
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '<email>educationengagementteam@qbcc.qld.gov.au'
+          replacement: '<email>educationengagementteam@qbcc.qld.gov.au.${{env.SFENV_NAME }}'
+          flags: "gim"                                    # Optional, defaults to "g"
+          include: ${{env.QUEUE_EDUCATION_AND_ENGAGEMENT}}        # Optional, defaults to ".*"
+          exclude: '.^'                                   # Optional, defaults to '.^'
+          encoding: 'utf8'                                # Optional, defaults to 'utf8'
+          path: ${{env.SRC_QUEUES_DIR}}
+
+      - name: Test for DestructiveChanges and Deployment changes
+        run: |
+          if grep -q "<members>" destructiveChanges/destructiveChanges.xml; then
+            echo "There are Destructive Changes"
+            echo "ARCHIVE_DESTRUCTIVE_CHANGES=true" >> $GITHUB_ENV 
+          else 
+            echo "There are NO Destructive Changes"
+            echo "ARCHIVE_DESTRUCTIVE_CHANGES=false" >> $GITHUB_ENV 
+          fi
+          if grep -q "<members>" ${{env.PACKAGEXML_FILE}}; then
+            echo "There are changes to be deployed"
+            echo "DEPLOY_CHANGES=true" >> $GITHUB_ENV 
+          else 
+            echo "The package.xml is EMPTY therefore nothing to do"
+            echo "DEPLOY_CHANGES=false" >> $GITHUB_ENV 
+          fi
+
+      - name: 'Archive DestructiveChanges if Found'
+        if: ${{env.ARCHIVE_DESTRUCTIVE_CHANGES == 'true'}}
+        uses: actions/upload-artifact@v3
+        with:
+          name: destructiveChanges    # Zip Filename that will be created
+          path: destructiveChanges
+          retention-days: 5
+
+      #Create zip of folder for uploading as artifact to increase performance due to large number of files
+      - name: Zip artifact for deployment
+        if: ${{github.event.inputs.DEBUG == 'true' ||
+          env.BRANCH_NAME == 'master' ||
+          env.BRANCH_NAME == 'STAGING'}}
+        run: zip deployment-package.zip ${{env.PACKAGEXML_FILE}} ${{env.SRC_DIR}} -r
+
+      - name: Upload artifact for deployment job
+        if: ${{github.event.inputs.DEBUG == 'true' ||
+          env.BRANCH_NAME == 'master' ||
+          env.BRANCH_NAME == 'STAGING'}}
+        uses: actions/upload-artifact@v3
+        with:
+          name: deployment-package    # Zip Filename that will be created
+          path: deployment-package.zip
+          retention-days: 5
+
+      #############################################################################
+      ## Build Deploy                                                            ##
+      #############################################################################
+      - name: Validate only without destructive change and without testclass
+        if: ${{(github.event.inputs.ValidateOnly == 'true')  && (env.DEPLOY_CHANGES == 'true') && (env.ARCHIVE_DESTRUCTIVE_CHANGES == 'false') && (steps.testclass.outputs.content == '')}}
+        shell: bash
+        env:
+          SFDX_DISABLE_DNS_CHECK: true
+        run: >-
+          sfdx force:source:deploy -x ${{env.PACKAGEXML_FILE}} -u
+          ${{env.SF_USERNAME}} -l NoTestRun -w 10000 --checkonly --verbose --loglevel fatal
+
+      - name: Validate only with destructive change and without testclass
+        if: ${{(github.event.inputs.ValidateOnly == 'true')  && (env.DEPLOY_CHANGES == 'true') && (env.ARCHIVE_DESTRUCTIVE_CHANGES == 'true') && (steps.testclass.outputs.content == '')}}
+        shell: bash
+        env:
+          SFDX_DISABLE_DNS_CHECK: true
+        run: >-
+          sfdx force:source:deploy -x ${{env.PACKAGEXML_FILE}} --postdestructivechanges destructiveChanges/destructiveChanges.xml -u
+          ${{env.SF_USERNAME}} -l NoTestRun -w 10000 --checkonly --verbose --loglevel fatal
+
+      - name: Validate only with destructive change and with testclass
+        if: ${{(github.event.inputs.ValidateOnly == 'true')  && (env.DEPLOY_CHANGES == 'true') && (env.ARCHIVE_DESTRUCTIVE_CHANGES == 'true') && (steps.testclass.outputs.content != '')}}
+        shell: bash
+        env:
+          SFDX_DISABLE_DNS_CHECK: true
+        run: >-
+          sfdx force:source:deploy -x ${{env.PACKAGEXML_FILE}} --postdestructivechanges destructiveChanges/destructiveChanges.xml -u
+          ${{env.SF_USERNAME}} -l RunSpecifiedTests  -r ${{steps.testclass.outputs.content}} -w 10000 --checkonly --verbose --loglevel fatal 
+
+      - name: Deploy all local test classes no destructiveChanges
+        if: >-
+          ${{(env.ARCHIVE_DESTRUCTIVE_CHANGES == 'false') && 
+          (env.DEPLOY_CHANGES == 'true') && (
+          (steps.last_successful_commit.outputs.commit_hash == '') || 
+          (steps.testclass.outputs.content == ''))}}
+        shell: bash
+        env:
+          SFDX_DISABLE_DNS_CHECK: true
+        run: >-
+          sfdx force:source:deploy -x ${{env.PACKAGEXML_FILE}} -u
+          ${{env.SF_USERNAME}} -l RunLocalTests -w 10000 --verbose --loglevel fatal
+
+      - name: Deploy all local test classes with destructiveChanges
+        if: >-
+          ${{(env.ARCHIVE_DESTRUCTIVE_CHANGES == 'true') && 
+          (env.DEPLOY_CHANGES == 'true') && (
+          (steps.last_successful_commit.outputs.commit_hash == '') || 
+          (steps.testclass.outputs.content == ''))}}
+        shell: bash
+        env:
+          SFDX_DISABLE_DNS_CHECK: true
+        run: >-
+          sfdx force:source:deploy -x ${{env.PACKAGEXML_FILE}} --postdestructivechanges destructiveChanges/destructiveChanges.xml -u
+          ${{env.SF_USERNAME}} -l RunLocalTests -w 10000 --verbose --loglevel fatal
+
+      - name: Deploy with specific test classes
+        if: >-
+          ${{(steps.testclass.outputs.content != '0') &&
+          (steps.testclass.outputs.content != '-1') &&
+          (steps.testclass.outputs.content != null)}}
+        id: deployWithTestClasses
+        shell: bash
+        env:
+          SFDX_DISABLE_DNS_CHECK: true
+        run: >-
+          sfdx force:source:deploy -x ${{env.PACKAGEXML_FILE}} -l
+          RunSpecifiedTests  -r ${{steps.testclass.outputs.content}} -u
+          ${{env.SF_USERNAME}} -w 10000 --verbose --loglevel fatal
