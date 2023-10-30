@@ -93,6 +93,7 @@ jobs:
         run: |
           echo '# Deployment Summary for ${{github.ref_name}}' >> $GITHUB_STEP_SUMMARY
           echo '## Input Options' >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
           echo '${{ toJson(github.event.inputs) }}' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
+#
+ #         echo '```' >> $GITHUB_STEP_SUMMARY
