@@ -127,3 +127,11 @@ jobs:
           ~/cli/sf/bin/sf version
           echo '## SF CLI Details' >> $GITHUB_STEP_SUMMARY   
           echo "CLI Home: $HOME/cli/sf/bin" >> $GITHUB_STEP_SUMMARY
+
+      # Checkout the source code
+      # fetch-depth: Number of commits to fetch. 0 indicates all history for all branches and tags.
+      - name: 'Checkout source code'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{env.BRANCH_NAME}}
