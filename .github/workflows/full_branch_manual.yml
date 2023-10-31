@@ -119,4 +119,4 @@ jobs:
           ~/sfdx/bin/sfdx version
           echo '## SF CLI Details' >> $GITHUB_STEP_SUMMARY   
           echo "CLI Home: $GITHUB_PATH" >> $GITHUB_STEP_SUMMARY
-          echo ${{ ~/sfdx/bin/sfdx version}} >> $GITHUB_STEP_SUMMARY
+          echo { ~/sfdx/bin/sfdx version} >> $GITHUB_STEP_SUMMARY
