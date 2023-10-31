@@ -114,7 +114,7 @@ jobs:
 
       # Install SF cli with a tar file
       # -------------------------------
-      # get tar file
+      # get tar file,
       # create directory where to install, let say ~/cli/sf
       # unpack the tar file. -C unpacks the contents in the ~/cli/sf directory, while --strip-components 1 removes the root path component.
       - name: 'Install Salesforce CLI with a tar file'
