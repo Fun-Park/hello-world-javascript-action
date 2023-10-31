@@ -111,10 +111,15 @@ jobs:
           echo "REPO_URL=$(echo ${{github.repository}})" >> $GITHUB_ENV
           echo "RUN_ID=${{ github.run_id }}" >> $GITHUB_ENV
 
+      # Install SF cli with a tar file
+      # -------------------------------
+      # get tar file
+      # create directory where to install, let say ~/cli/sf
+      # unpack the tar file. -C unpacks the contents in the ~/cli/sf directory, while --strip-components 1 removes the root path component.
       - name: 'Install Salesforce CLI with a tar file'
-        run: |
-          wget https://developer.salesforce.com/media/salesforce-cli/sfdx/channels/stable/sfdx-linux-x64.tar.xz
-          mkdir ~/sfdx
-          tar xJf sfdx-linux-x64.tar.xz -C ~/sfdx --strip-components 1
-          echo "$HOME/sfdx/bin" >> $GITHUB_PATH
-          ~/sfdx/bin/sfdx version
+        run: |        
+          wget https://developer.salesforce.com/media/salesforce-cli/sf/channels/stable/sf-linux-x64.tar.xz
+          mkdir ~/cli/sf
+          tar xJf sf-linux-x64.tar.xz -C ~/cli/sf --strip-components 1
+          echo "$HOME/cli/sf/bin" >> $GITHUB_PATH
+          ~/cli/sf/bin/sf version
