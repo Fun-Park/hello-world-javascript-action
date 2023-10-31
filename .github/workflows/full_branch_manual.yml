@@ -118,4 +118,5 @@ jobs:
           tar xJf sfdx-linux-x64.tar.xz -C ~/sfdx --strip-components 1
           echo "$HOME/sfdx/bin" >> $GITHUB_PATH
           ~/sfdx/bin/sfdx version
-          echo "$HOME/cli/sf/bin" >> $GITHUB_STEP_SUMMARY
+          echo '## SF CLI Details' >> $GITHUB_STEP_SUMMARY   
+          echo "CLI Home: $HOME/cli/sf/bin" >> $GITHUB_STEP_SUMMARY
