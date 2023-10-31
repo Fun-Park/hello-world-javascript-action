@@ -146,6 +146,8 @@ jobs:
           exclude: 'Salesforce/'                                   # Optional, defaults to '.^'
           encoding: 'utf8'                                # Optional, defaults to 'utf8'
           path: "./"
+
+        -name: 'show new repo url'
         run: 
           echo "replaced repo url with :${{env.SERVER_URL}}/${{env.REPO_URL}}/tree/${{env.BRANCH_NAME}}"
 
