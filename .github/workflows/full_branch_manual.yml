@@ -1,11 +1,8 @@
 # This is a basic workflow that is manually triggered
-
-name: Full Branch Manual Deployment
-
 # Controls when the action will run. Workflow runs when manually triggered using the UI
 # or API.
-# on: [push]
- workflow_dispatch:
+name: Full Branch Manual Deployment
+on:  workflow_dispatch:
     inputs:
       DEBUG:
         description: 'If DEBUGGING and artifact creation should be enabled'
