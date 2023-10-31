@@ -97,3 +97,16 @@ jobs:
           echo '```' >> $GITHUB_STEP_SUMMARY
 #
  #         echo '```' >> $GITHUB_STEP_SUMMARY
+
+       ############################################################################
+      # Dependencies and plugin setup                                           ##
+      ############################################################################
+
+      # Get context information - branch name
+      - name: 'Get Context Information'
+        shell: bash
+        run: |
+          echo "BRANCH_NAME=$(echo ${{github.ref_name}})" >> $GITHUB_ENV
+          echo "SERVER_URL=$(echo ${{github.server_url}})" >> $GITHUB_ENV
+          echo "REPO_URL=$(echo ${{github.repository}})" >> $GITHUB_ENV
+          echo "RUN_ID=${{ github.run_id }}" >> $GITHUB_ENV
