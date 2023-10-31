@@ -1,8 +1,12 @@
 # This is a basic workflow that is manually triggered
 # Controls when the action will run. Workflow runs when manually triggered using the UI
 # or API.
-name: Full Branch Manual Deployment
-on:  workflow_dispatch:
+name: Full Branch Deployment with SF cli
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI
+# or API.
+on:
+  workflow_dispatch:
     inputs:
       DEBUG:
         description: 'If DEBUGGING and artifact creation should be enabled'
