@@ -4,29 +4,29 @@ name: Full Branch Manual Deployment
 
 # Controls when the action will run. Workflow runs when manually triggered using the UI
 # or API.
-on:
-  workflow_dispatch:
-    inputs:
-      DEBUG:
-        description: 'If DEBUGGING and artifact creation should be enabled'
-        default: false
-        required: false
-        type: boolean
-      ValidateOnly:
-        description: 'Validation only'
-        default: false
-        required: false
-        type: boolean
-      RunTests:
-        description: 'Run Local Tests?'
-        default: false
-        required: false
-        type: boolean
-      PLSPROD:
-        description: 'Use production PLS Endpoint'
-        default: false
-        required: false
-        type: boolean
+on: [push]
+ # workflow_dispatch:
+    # inputs:
+    #   DEBUG:
+    #     description: 'If DEBUGGING and artifact creation should be enabled'
+    #     default: false
+    #     required: false
+    #     type: boolean
+    #   ValidateOnly:
+    #     description: 'Validation only'
+    #     default: false
+    #     required: false
+    #     type: boolean
+    #   RunTests:
+    #     description: 'Run Local Tests?'
+    #     default: false
+    #     required: false
+    #     type: boolean
+    #   PLSPROD:
+    #     description: 'Use production PLS Endpoint'
+    #     default: false
+    #     required: false
+    #     type: boolean
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
