@@ -94,9 +94,8 @@ jobs:
           echo '# Deployment Summary for ${{github.ref_name}}' >> $GITHUB_STEP_SUMMARY
           echo '## Input Options' >> $GITHUB_STEP_SUMMARY
           echo '${{ toJson(github.event.inputs) }}' >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-#
- #         echo '```' >> $GITHUB_STEP_SUMMARY
+#          echo '```' >> $GITHUB_STEP_SUMMARY
+
 
        ############################################################################
       # Dependencies and plugin setup                                           ##
@@ -119,4 +118,5 @@ jobs:
           echo "$HOME/sfdx/bin" >> $GITHUB_PATH
           ~/sfdx/bin/sfdx version
           echo '## SF CLI Details' >> $GITHUB_STEP_SUMMARY   
-          echo "CLI Home: $HOME/cli/sf/bin" >> $GITHUB_STEP_SUMMARY
+          echo "CLI Home: $GITHUB_PATH" >> $GITHUB_STEP_SUMMARY
+          echo ${{ ~/sfdx/bin/sfdx version}} >> $GITHUB_STEP_SUMMARY
