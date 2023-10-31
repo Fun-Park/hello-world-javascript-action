@@ -137,16 +137,16 @@ jobs:
           fetch-depth: 0
           ref: ${{env.BRANCH_NAME}}
 
-      # - name: 'update_git_repo_url'
-      # uses: mingjun97/file-regex-replace@v1
-      # with:
-      #   regex: '"url": "[^"]*"'  #replace any url
-      #   replacement: '"url": "${{env.SERVER_URL}}/${{env.REPO_URL}}/tree/${{env.BRANCH_NAME}}"'
-      #   flags: "gim"                                      # Optional, defaults to "g"
-      #   include: "package.json"                         # Optional, defaults to ".*"
-      #   exclude: 'Salesforce/'                                   # Optional, defaults to '.^'
-      #   encoding: 'utf8'                                # Optional, defaults to 'utf8'
-      #   path: "./"
+      - name: 'update_git_repo_url'
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '"url": "[^"]*"'
+          replacement: '"url": "${{env.SERVER_URL}}/${{env.REPO_URL}}/tree/${{env.BRANCH_NAME}}"'
+          flags: "gim"                                                                        # Optional, defaults to "g"
+          include: "package.json"                                                             # Optional, defaults to ".*"
+          exclude: 'Salesforce/'                                                              # Optional, defaults to '.^'
+          encoding: 'utf8'                                                                    # Optional, defaults to 'utf8'
+          path: "./"
 
       #   -name: 'show new repo url'
       #   run: 

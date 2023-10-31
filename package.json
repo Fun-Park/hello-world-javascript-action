@@ -2,9 +2,15 @@
   "name": "hello-world-javascript-action",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "bin/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "node bin/main.js",
+    "split": "node bin/secret_handler.js",
+    "updateCustomerEmailCSV" : "node bin/updateCustomerEmailCSV.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Fun-Park/hello-world-javascript-action/tree"
   },
   "keywords": [],
   "author": "",
