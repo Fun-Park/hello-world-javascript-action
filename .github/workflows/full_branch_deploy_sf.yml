@@ -96,7 +96,6 @@ jobs:
           echo '${{ toJson(github.event.inputs) }}' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
 #
- #         echo '```' >> $GITHUB_STEP_SUMMARY
 
        ############################################################################
       # Dependencies and plugin setup                                           ##
@@ -123,3 +122,4 @@ jobs:
           tar xJf sf-linux-x64.tar.xz -C ~/cli/sf --strip-components 1
           echo "$HOME/cli/sf/bin" >> $GITHUB_PATH
           ~/cli/sf/bin/sf version
+          echo 'GITHUB_PATH: $GITHUB_PATH' >> $GITHUB_STEP_SUMMARY
