@@ -122,4 +122,11 @@ jobs:
           tar xJf sf-linux-x64.tar.xz -C ~/cli/sf --strip-components 1
           echo "$HOME/cli/sf/bin" >> $GITHUB_PATH
           ~/cli/sf/bin/sf version
+          
+
+      - name: Add SF cli details to Summary
+        run: |
+          echo '# SF CLI Details' >> $GITHUB_STEP_SUMMARY          
           echo "$HOME/cli/sf/bin" >> $GITHUB_STEP_SUMMARY
+          echo ${{~/cli/sf/bin/sf version}} >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
