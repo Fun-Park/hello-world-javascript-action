@@ -110,8 +110,7 @@ jobs:
           echo "BRANCH_NAME=$(echo ${{github.ref_name}})" >> $GITHUB_ENV
           echo "SERVER_URL=$(echo ${{github.server_url}})" >> $GITHUB_ENV
           echo "REPO_URL=$(echo ${{github.repository}})" >> $GITHUB_ENV
-          echo "RUN_ID=${{ github.run_id }}" >> $GITHUB_ENV
-          echo "repo url :${{env.SERVER_URL}}/${{env.REPO_URL}}/tree/${{env.BRANCH_NAME}}"
+          echo "RUN_ID=${{ github.run_id }}" >> $GITHUB_ENV          
 
       # Install SF cli with a tar file
       # -------------------------------
@@ -128,6 +127,7 @@ jobs:
           ~/cli/sf/bin/sf version
           echo '## SF CLI Details' >> $GITHUB_STEP_SUMMARY   
           echo "CLI Home: $HOME/cli/sf/bin" >> $GITHUB_STEP_SUMMARY
+          echo "repo url :${{env.SERVER_URL}}/${{env.REPO_URL}}/tree/${{env.BRANCH_NAME}}"
 
       # Checkout the source code
       # fetch-depth: Number of commits to fetch. 0 indicates all history for all branches and tags.
