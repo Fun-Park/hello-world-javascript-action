@@ -137,7 +137,7 @@ jobs:
           fetch-depth: 0
           ref: ${{env.BRANCH_NAME}}
 
-      - name: 'update_git_repo_url'
+      - name: 'Update git repo url'
         uses: mingjun97/file-regex-replace@v1
         with:
           regex: '"url": "[^"]*"'
