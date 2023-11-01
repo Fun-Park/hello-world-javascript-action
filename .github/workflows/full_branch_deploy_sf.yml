@@ -161,5 +161,6 @@ jobs:
           workflow-id: ${{env.WORKFLOW_ID}}
           error-on-no-successful-workflow: true        # to error and exit if no successful workflow run is found
 
-      # - name: 'echo last successful commit'
-      #     run: echo "-- last successful commit --" + ${{steps.last_successful_commit.outputs.head}}
+      - name: 'echo last successful commit'
+        run: 
+          echo "repo url :${{env.NX_BASE}}"
