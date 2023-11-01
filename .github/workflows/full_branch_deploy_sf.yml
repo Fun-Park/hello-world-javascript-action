@@ -153,10 +153,13 @@ jobs:
         run: npm install
 
       # Get latest successful commit
-      #- run: echo "-- last successful commit --" + ${{steps.last_successful_commit.outputs.commit_hash}}
       - name: 'Get last successful commit'
         uses: nrwl/nx-set-shas@v4
         id: last_successful_commit
         with:
           main-branch-name: ${{env.BRANCH_NAME}}
           workflow-id: ${{env.WORKFLOW_ID}}
+          error-on-no-successful-workflow: true        # to error and exit if no successful workflow run is found
+
+      - name: 'echo last successful commit'
+          run: echo "-- last successful commit --" + ${{steps.last_successful_commit.outputs.head}}
