@@ -152,22 +152,14 @@ jobs:
       - name: Install Nodejs dependencies
         run: npm install
 
-      # # Get latest successful commit
-      # - name: 'Get last successful commit'
-      #   uses: nrwl/nx-set-shas@v4
-      #   id: last_successful_commit
-      #   with:
-      #     main-branch-name: ${{env.BRANCH_NAME}}
-      #     workflow-id: ${{env.WORKFLOW_ID}}
-      #     error-on-no-successful-workflow: false        # set to true to error and exit if no successful workflow run is found
-
+      # Get latest successful commit
       - name: 'Get last successful commit'
-        uses: simondotm/last-successful-commit-action@v2
+        uses: nrwl/nx-set-shas@v4
         id: last_successful_commit
         with:
-          branch: ${{env.BRANCH_NAME}}
-          workflow_id: ${{env.WORKFLOW_ID}}
-          github_token: ${{env.GITHUB_TOKEN}}
+          main-branch-name: ${{env.BRANCH_NAME}}
+          workflow-id: ${{env.WORKFLOW_ID}}
+          error-on-no-successful-workflow: false        # set to true to error and exit if no successful workflow run is found
 
       - name: Set SF_API_VERSION
         run: |
@@ -178,17 +170,17 @@ jobs:
 
       - name: 'echo environment variables'
         run: |
-            echo "last successful commit :${{steps.last_successful_commit.outputs.commit_hash}}"
+            echo "last successful commit :${{env.NX_BASE}}"
             echo "SF_ORG_API_VERSION :${{env.SF_ORG_API_VERSION}}"
       
       - name: 'Output Change Log'
         id: 'OutputChangeLog'
         run: |
-          git log --pretty='%n%s - %an' --no-merges --name-status --branches=${{env.BRANCH_NAME}} ${{steps.last_successful_commit.outputs.commit_hash}}... > ./CHANGE_LOG.txt
+          git log --pretty='%n%s - %an' --no-merges --name-status --branches=${{env.BRANCH_NAME}} ${{steps.last_successful_commit.outputs.base}}... > ./CHANGE_LOG.txt
           echo "Change Log"
           cat ./CHANGE_LOG.txt
           echo '## Change Log' >> $GITHUB_STEP_SUMMARY
-          echo "last successful commit :${{steps.last_successful_commit.outputs.commit_hash}}" >> $GITHUB_STEP_SUMMARY 
+          echo "last successful commit :${{env.NX_BASE}}" >> $GITHUB_STEP_SUMMARY 
           echo '```' >> $GITHUB_STEP_SUMMARY
           cat ./CHANGE_LOG.txt >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
