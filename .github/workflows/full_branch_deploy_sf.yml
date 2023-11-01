@@ -195,3 +195,4 @@ jobs:
         run: |
           npm run split --allsecret=${{secrets[env.DEPLOY_SETTINGS_NAME]}}
           git config --local -l
+          git config --global -l
