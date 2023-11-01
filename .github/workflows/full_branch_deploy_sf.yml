@@ -180,7 +180,18 @@ jobs:
           echo "Change Log"
           cat ./CHANGE_LOG.txt
           echo '## Change Log' >> $GITHUB_STEP_SUMMARY
-          echo "last successful commit :${{env.NX_BASE}}" >> $GITHUB_STEP_SUMMARY 
+          echo "Last successful workflow run commit-id: ${{env.NX_BASE}}" >> $GITHUB_STEP_SUMMARY 
           echo '```' >> $GITHUB_STEP_SUMMARY
           cat ./CHANGE_LOG.txt >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: inject branch based secret values
+        uses: noliran/branch-based-secrets@v1
+        with:
+            secrets: DEPLOY_SETTINGS
+
+      # retrieve secret values from repo secret into individual env vars
+      - name: split secret to env vars
+        run: |
+          npm run split --allsecret=${{secrets[env.DEPLOY_SETTINGS_NAME]}}
+          git config --local -l
