@@ -148,7 +148,6 @@ jobs:
           encoding: 'utf8'                                                                    # Optional, defaults to 'utf8'
           path: "./"
 
-      #   -name: 'show new repo url'
-      #   run: 
-      #     echo "replaced repo url with :${{env.SERVER_URL}}/${{env.REPO_URL}}/tree/${{env.BRANCH_NAME}}"
-
+      # Install dependencies set in package-lock.json locates in root of the repo
+      - name: Install Nodejs dependencies
+        run: npm install
