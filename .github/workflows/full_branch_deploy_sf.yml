@@ -159,8 +159,16 @@ jobs:
         with:
           main-branch-name: ${{env.BRANCH_NAME}}
           workflow-id: ${{env.WORKFLOW_ID}}
-          error-on-no-successful-workflow: true        # to error and exit if no successful workflow run is found
+          error-on-no-successful-workflow: false        # set to true to error and exit if no successful workflow run is found
 
-      - name: 'echo last successful commit'
-        run: 
-          echo "last successful commit :${{env.NX_BASE}}"
+      - name: Set SF_API_VERSION
+        run: |
+          sourceApiVersion=$(jq '.sourceApiVersion | tonumber' ./sfdx-project.json)
+          echo SF_ORG_API_VERSION=$sourceApiVersion.0 >> $GITHUB_ENV
+          sf config set org-api-version=$sourceApiVersion.0 --global
+          sf config list
+
+      - name: 'echo environment variables'
+        run: |
+            echo "last successful commit :${{env.NX_BASE}}"
+            echo "SF_ORG_API_VERSION :${{env.SF_ORG_API_VERSION}}"
