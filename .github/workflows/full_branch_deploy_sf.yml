@@ -163,4 +163,4 @@ jobs:
 
       - name: 'echo last successful commit'
         run: 
-          echo "repo url :${{env.NX_BASE}}"
+          echo "last successful commit :${{env.NX_BASE}}"

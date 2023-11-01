@@ -1,0 +1,12 @@
+{
+        "packageDirectories": [
+                {
+                "path": "Salesforce/force-app",
+                "default": true
+                }
+        ],
+        "name": "SFDX_Pro",
+        "namespace": "",
+        "sfdcLoginUrl": "https://test.salesforce.com",
+        "sourceApiVersion": "59.0"
+}
