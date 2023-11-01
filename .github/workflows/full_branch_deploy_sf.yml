@@ -159,5 +159,5 @@ jobs:
         id: last_successful_commit
         with:
           main-branch-name: ${{env.BRANCH_NAME}}
-          workflow_id: ${{env.WORKFLOW_ID}}
-          github_token: ${{env.GITHUB_TOKEN}}
+          workflow-id: ${{env.WORKFLOW_ID}}
+          github-token: ${{env.GITHUB_TOKEN}}
