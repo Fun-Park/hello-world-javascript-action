@@ -180,6 +180,7 @@ jobs:
           echo "Change Log"
           cat ./CHANGE_LOG.txt
           echo '## Change Log' >> $GITHUB_STEP_SUMMARY
+          echo "last successful commit :${{env.NX_BASE}}" >> $GITHUB_STEP_SUMMARY 
           echo '```' >> $GITHUB_STEP_SUMMARY
           cat ./CHANGE_LOG.txt >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
