@@ -186,12 +186,14 @@ jobs:
           echo '```' >> $GITHUB_STEP_SUMMARY
 
       - name: inject branch based secret values
+        id: 'SecretSplit'
         uses: noliran/branch-based-secrets@v1
         with:
             secrets: DEPLOY_SETTINGS
 
       # retrieve secret values from repo secret into individual env vars
       - name: split secret to env vars
+        
         run: |
           npm run split --allsecret=${{secrets[env.DEPLOY_SETTINGS_NAME]}}
-          echo "Secrets array : ${{env.json_var}}"
+          echo "Secrets array : ${{steps.SecretSplit.outputs.json_var}}"
