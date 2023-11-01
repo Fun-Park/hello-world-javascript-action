@@ -151,3 +151,13 @@ jobs:
       # Install dependencies set in package-lock.json locates in root of the repo
       - name: Install Nodejs dependencies
         run: npm install
+
+      # Get latest successful commit
+      #- run: echo "-- last successful commit --" + ${{steps.last_successful_commit.outputs.commit_hash}}
+      - name: 'Get last successful commit'
+        uses: simondotm/last-successful-commit-action@v2
+        id: last_successful_commit
+        with:
+          branch: ${{env.BRANCH_NAME}}
+          workflow_id: ${{env.WORKFLOW_ID}}
+          github_token: ${{env.GITHUB_TOKEN}}
