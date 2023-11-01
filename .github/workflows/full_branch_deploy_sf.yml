@@ -160,4 +160,3 @@ jobs:
         with:
           main-branch-name: ${{env.BRANCH_NAME}}
           workflow-id: ${{env.WORKFLOW_ID}}
-          github-token: ${{env.GITHUB_TOKEN}}
