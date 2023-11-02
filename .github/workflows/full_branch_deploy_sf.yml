@@ -152,8 +152,8 @@ jobs:
       - name: Install Nodejs dependencies
         run: npm install
 
-      # Get latest successful commit
-      - name: 'Get last successful commit'
+      # Get last commit of successful workflow run
+      - name: 'Get last commit of successful workflow run'
         uses: nrwl/nx-set-shas@v4
         id: last_successful_commit
         with:
@@ -225,3 +225,9 @@ jobs:
           name: deployment-package    # Zip Filename that will be created
           path: deployment-package.zip
           retention-days: 5
+
+      - name: check if zip file exist
+        run: |
+          if test -f ./deployment-package.zip then
+             echo "deployment-package.zip exists."
+          fi
