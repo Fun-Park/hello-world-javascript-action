@@ -231,4 +231,15 @@ jobs:
           if test -f ./deployment-package.zip;
           then
              echo "deployment-package.zip exists."
+          else
+             echo "deployment-package.zip not found !."
           fi
+
+      - name: Deploy without Tests
+        id: deployWithoutTests
+        shell: bash
+        env:
+          SFDX_DISABLE_DNS_CHECK: true
+        run: >-
+          sf project  deploy -x ${{env.PACKAGEXML_FILE}} 
+          -l NoTestRun -o ${{env.SF_USERNAME}} -w 10000 --verbose --loglevel fatal
