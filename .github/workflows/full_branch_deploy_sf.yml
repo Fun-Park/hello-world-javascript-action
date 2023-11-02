@@ -228,6 +228,7 @@ jobs:
 
       - name: check if zip file exist
         run: |
-          if test -f ./deployment-package.zip then
+          if test -f ./deployment-package.zip;
+          then
              echo "deployment-package.zip exists."
           fi
