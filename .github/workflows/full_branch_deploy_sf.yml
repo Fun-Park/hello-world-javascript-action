@@ -241,5 +241,5 @@ jobs:
         env:
           SFDX_DISABLE_DNS_CHECK: true
         run: >-
-          sf project  deploy -x ${{env.PACKAGEXML_FILE}} 
+          sf project deploy start -x ${{env.PACKAGEXML_FILE}} 
           -l NoTestRun -o ${{env.SF_USERNAME}} -w 10000 --verbose --loglevel fatal
