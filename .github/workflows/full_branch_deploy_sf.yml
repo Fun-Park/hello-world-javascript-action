@@ -131,13 +131,13 @@ jobs:
 
       # Checkout the source code
       # fetch-depth: Number of commits to fetch. 0 indicates all history for all branches and tags.
-      - name: 'Checkout source code'
+      - name: 'Checkout the source code of ${{env.BRANCH_NAME}} branch'
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{env.BRANCH_NAME}}
 
-      - name: 'Update git repo url'
+      - name: 'Update git repo url in package.json'
         uses: mingjun97/file-regex-replace@v1
         with:
           regex: '"url": "[^"]*"'
@@ -196,9 +196,9 @@ jobs:
         run: |
           npm run split --allsecret=${{secrets[env.DEPLOY_SETTINGS_NAME]}}
 
-      - name: spill the SFDX_URL
-        run: |
-          echo "SFDX_URL : ${{env.SFDX_URL}}"
+      # - name: spill the SFDX_URL
+      #   run: |
+      #     echo "SFDX_URL : ${{env.SFDX_URL}}"
 
         # Authenticate target org and default user
       - name: 'Authenticate Target Org'
