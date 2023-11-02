@@ -131,7 +131,7 @@ jobs:
 
       # Checkout the source code
       # fetch-depth: Number of commits to fetch. 0 indicates all history for all branches and tags.
-      - name: 'Checkout the source code of ${{env.BRANCH_NAME}} branch'
+      - name: 'Checkout the source code of [${{env.BRANCH_NAME}}] branch'
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -212,3 +212,16 @@ jobs:
           else 
             echo "LOGIN_URL=https://playground4-dev-ed.develop.my.salesforce.com/" >> $GITHUB_ENV
           fi
+
+      #Create zip of folder for uploading as artifact to increase performance due to large number of files
+      - name: Zip artifact for deployment
+        if: ${{github.event.inputs.DEBUG == 'true' || env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'STAGING'}}
+        run: zip deployment-package.zip ${{env.PACKAGEXML_FILE}} ${{env.SRC_DIR}} --exclude ${{env.SRC_DIR}}globalValueSets/\* ${{env.SRC_DIR}}objects/*__mdt/\* ${{env.SRC_DIR}}customMetadata/\* -r
+
+      - name: Upload artifact for deployment job 
+        if: ${{github.event.inputs.DEBUG == 'true' || env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'STAGING'}}
+        uses: actions/upload-artifact@v3
+        with:
+          name: deployment-package    # Zip Filename that will be created
+          path: deployment-package.zip
+          retention-days: 5
