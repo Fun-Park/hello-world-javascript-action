@@ -196,6 +196,19 @@ jobs:
         run: |
           npm run split --allsecret=${{secrets[env.DEPLOY_SETTINGS_NAME]}}
 
-      - name: spill the splits out
+      - name: spill the SFDX_URL
         run: |
-          echo "Secrets array : ${{steps.SecretSplit.outputs.json_var}}"
+          echo "SFDX_URL : ${{env.SFDX_URL}}"
+
+        # Authenticate target org and default user
+      - name: 'Authenticate Target Org'
+        run: |
+          echo  ${{env.SFDX_URL}} > ~/SANDBOX_SFDX_URL.txt
+          sf org login sfdx-url --sfdx-url-file ~/SANDBOX_SFDX_URL.txt 
+          # Set the login url for test class login
+          if ${{github.ref_name != 'master'}}
+          then
+            echo LOGIN_URL=https://playground4-dev-ed.develop.my.salesforce.com/ >> $GITHUB_ENV
+          else 
+            echo "LOGIN_URL=https://playground4-dev-ed.develop.my.salesforce.com/" >> $GITHUB_ENV
+          fi
